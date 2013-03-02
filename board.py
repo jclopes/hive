@@ -140,6 +140,29 @@ class HexBoard(Board):
         return (x+1, y)
 
 
+    def __repr__(self):
+        res = ""
+        num_columns = len(self.board[0])
+        num_rows = len(self.board)
+        for i in range(num_rows):
+            p = i % 2
+            res += " \\" * p
+            for j in range(num_columns):
+                res += " / \\"
+            res += "\n"
+            res += "  " * p
+            for j in range(num_columns):
+                res += "|   "
+            res += "|\n"
+        p = (num_rows - 1) % 2
+        res += "  " * p
+        for j in range(num_columns):
+            res += " \\ /"
+        res += "\n"
+
+        return res
+
+
 class Pice(object):
     """Representation of Playing Pice"""
     def __init__(self, color, kind, number):
