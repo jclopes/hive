@@ -31,17 +31,17 @@ Notation:
     * ex: "wG2/*bA1" - the second white grasshopper is positioned touching the first black ant on its left-upper side.
 
  - Point Of Contact:
-    * /* - moving pice is place touching the target pice at its upper-left face
-    * |* - moving pice is place touching the target pice at its left face
-    * \* - moving pice is place touching the target pice at its lower-left face
-    * *\ - moving pice is place touching the target pice at its upper-right face
-    * *| - moving pice is place touching the target pice at its right face
-    * */ - moving pice is place touching the target pice at its lower-right face
-    * =* - moving pice is place on top of the target pice
+    * `/*` - moving pice is place touching the target pice at its upper-left face
+    * `|*` - moving pice is place touching the target pice at its left face
+    * `\*` - moving pice is place touching the target pice at its lower-left face
+    * `*\` - moving pice is place touching the target pice at its upper-right face
+    * `*|` - moving pice is place touching the target pice at its right face
+    * `*/` - moving pice is place touching the target pice at its lower-right face
+    * `=*` - moving pice is place on top of the target pice
 
 
 Board:
 -----
 
 The board is a virtual concept since there is no board in the original board game.
-The first player played pice is positioned at the cell 0 and the seccond player places its first pice at the cell 1 touching the first pice on its right side ("*|").
+The first player played pice is positioned at the cell 0,0 and the seccond player places its first pice at the cell 0,1 touching the first pice on its right side ("*|").
