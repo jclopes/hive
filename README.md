@@ -3,11 +3,15 @@ The Hive
 
 Based on the board game "The Hive"
 
- / \ / \
-|   |   |
- \ / \ /
-  |   |
-   \ /
+```
+    / \ / \
+   |   |   |
+  / \ / \ / \
+ |   |   |   |
+  \ / \ / \ /
+   |   |   |
+    \ / \ /
+```
 
 Notation:
 --------
