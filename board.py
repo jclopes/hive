@@ -142,23 +142,33 @@ class HexBoard(Board):
 
     def __repr__(self):
         res = ""
-        num_columns = len(self.board[0])
-        num_rows = len(self.board)
-        for i in range(num_rows):
+        first_col = -self.ref0x
+        first_row = -self.ref0y
+        num_cols = len(self.board[0]) + first_col
+        num_rows = len(self.board) + first_row
+        for i in range(first_row, num_rows):
             p = i % 2
-            res += " \\" * p
-            for j in range(num_columns):
+            if i > first_row and p == 1:
+                res += " \\"
+            else:
+                res += "  " * p
+            for j in range(first_col, num_cols):
                 res += " / \\"
-            if i > 0 and p == 0:
+            if i > first_row and p == 0:
                 res += " /"
             res += "\n"
             res += "  " * p
-            for j in range(num_columns):
-                res += "|   "
+            for j in range(first_col, num_cols):
+                value = self.get(j, i)
+                if not value is None:
+                    value = value[:3]
+                else:
+                    value = "   "
+                res += "|" + value
             res += "|\n"
         p = (num_rows - 1) % 2
         res += "  " * p
-        for j in range(num_columns):
+        for j in range(first_col, num_cols):
             res += " \\ /"
         res += "\n"
 
