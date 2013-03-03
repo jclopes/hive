@@ -1,12 +1,13 @@
 #! /usr/bin/env python
 
 import sys
+from board import HexBoard
 
 
 def main():
-    board = Board()
-    player1 = Player()
-    player2 = Player2()
+    board = HexBoard()
+    board.set(3, 3, "3,3")
+    print board
 
 
 if __name__ == '__main__':

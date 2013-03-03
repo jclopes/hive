@@ -149,6 +149,8 @@ class HexBoard(Board):
             res += " \\" * p
             for j in range(num_columns):
                 res += " / \\"
+            if i > 0 and p == 0:
+                res += " /"
             res += "\n"
             res += "  " * p
             for j in range(num_columns):
