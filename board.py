@@ -49,7 +49,8 @@ class Board(object):
                 row.insert(0, None)
 
 
-    def set(self, x, y, value):
+    def place(self, x, y, value):
+        "Place a pice in the board position (x, y)"
         xx = self.ref0x+x
         yy = self.ref0y+y
 
