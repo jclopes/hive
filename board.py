@@ -18,20 +18,21 @@ class Board(object):
     """
     Representation of the virtual playing Board.
     Dynamic board that will extend to the required size when values are set.
-    All positions of the board are initialized with "None" value.
+    All positions of the board are initialized with "[]" value.
     """
     def __init__(self):
-        # the board starts with one row and a column without pices
-        self.board = [[None]]
+        # the board starts with one row and a column without pieces
+        self.board = [[[]]]
         self.ref0x = 0
         self.ref0y = 0
+        self.pieceIdex = {}
 
 
     def _add_row(self, before=False):
         newRow = []
         rowSize = len(self.board[0])
         for i in range(rowSize):
-            newRow.append(None)
+            newRow.append([])
         if not before:
             self.board.append(newRow)
         else:
@@ -44,13 +45,13 @@ class Board(object):
             self.ref0x += 1
         for row in self.board:
             if not before:
-                row.append(None)
+                row.append([])
             else:
-                row.insert(0, None)
+                row.insert(0, [])
 
 
-    def place(self, x, y, value):
-        "Place a pice in the board position (x, y)"
+    def place(self, x, y, piece):
+        "Place a piece in the board position (x, y)"
         xx = self.ref0x+x
         yy = self.ref0y+y
 
@@ -65,13 +66,14 @@ class Board(object):
         while yy >= len(self.board):
             self._add_row()
 
-        self.board[yy][xx] = value
+        self.board[yy][xx].append(piece)
+        self.pieceIdex[piece] = (x, y)
 
 
     def get(self, x, y):
-        xx = self.ref0x+x
-        yy = self.ref0y+y
-        res = None
+        xx = self.ref0x + x
+        yy = self.ref0y + y
+        res = []
         try:
             res = self.board[yy][xx]
         except IndexError, e:
@@ -143,41 +145,41 @@ class HexBoard(Board):
 
     def __repr__(self):
         res = ""
-        first_col = -self.ref0x
-        first_row = -self.ref0y
-        num_cols = len(self.board[0]) + first_col
-        num_rows = len(self.board) + first_row
-        for i in range(first_row, num_rows):
+        firstCol = -self.ref0x
+        firstRow = -self.ref0y
+        numCols = len(self.board[0]) + firstCol
+        numRows = len(self.board) + firstRow
+        for i in range(firstRow, numRows):
             p = i % 2
-            if i > first_row and p == 1:
+            if i > firstRow and p == 1:
                 res += " \\"
             else:
                 res += "  " * p
-            for j in range(first_col, num_cols):
+            for j in range(firstCol, numCols):
                 res += " / \\"
-            if i > first_row and p == 0:
+            if i > firstRow and p == 0:
                 res += " /"
             res += "\n"
             res += "  " * p
-            for j in range(first_col, num_cols):
+            for j in range(firstCol, numCols):
                 value = self.get(j, i)
-                if not value is None:
-                    value = value[:3]
+                if len(value) != 0:
+                    value = value[0][:3]
                 else:
                     value = "   "
                 res += "|" + value
             res += "|\n"
-        p = (num_rows - 1) % 2
+        p = (numRows - 1) % 2
         res += "  " * p
-        for j in range(first_col, num_cols):
+        for j in range(firstCol, numCols):
             res += " \\ /"
         res += "\n"
 
         return res
 
 
-class Pice(object):
-    """Representation of Playing Pice"""
+class Piece(object):
+    """Representation of Playing Piece"""
     def __init__(self, color, kind, number):
         super(Cell, self).__init__()
         self.color = color
