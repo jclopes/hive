@@ -70,6 +70,11 @@ class Board(object):
         self.pieceIdex[piece] = (x, y)
 
 
+    def remove(self, piece):
+        (x, y) = self.pieceIdex.pop(piece)
+        self.board[y][x].remove(piece)
+
+
     def get(self, x, y):
         xx = self.ref0x + x
         yy = self.ref0y + y
