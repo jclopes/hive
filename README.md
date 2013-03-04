@@ -2,6 +2,7 @@ The Hive
 ========
 
 Based on the board game "The Hive"
+The aim of this project is to have a standard playground to develop and test A.I. to play the Hive game.
 
 ```
     / \ / \
