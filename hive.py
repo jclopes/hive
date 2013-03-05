@@ -23,3 +23,30 @@ class Hive(object):
         #   - if the move is not a jump
         #     - check that the end position is in the periphery of the board
 
+
+    def one_hive(self, piece):
+        """Check if removing a piece doesn't break the one hive rule."""
+        originalPos = self.board.remove(piece)
+        occupied = self.occupied_surroundings(originalPos)
+        visited = set()
+        toExplore = set([occupied[0]])
+        toReach = set(occupied[1:])
+        res = False
+
+        while len(toExplore) > 0:
+            found = []
+            for cell in toExplore:
+                found += self.occupied_surroundings(cell)
+                visited.add(cell)
+            toExplore = set(found) - visited
+            if toReach.issubset(visited):
+                res = True
+                break
+
+        self.board.place(originalPos, piece)
+        return res
+
+
+    def occupied_surroundings(self, cell):
+        surroundings = self.board.get_surrounding(cell)
+        return [c for c in surroundings if len(self.board.get(c)) > 0]
