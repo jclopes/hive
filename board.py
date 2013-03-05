@@ -25,7 +25,7 @@ class Board(object):
         self.board = [[[]]]
         self.ref0x = 0
         self.ref0y = 0
-        self.pieceIdex = {}
+        self.pieceIndex = {}
 
 
     def _add_row(self, before=False):
@@ -67,12 +67,14 @@ class Board(object):
             self._add_row()
 
         self.board[yy][xx].append(piece)
-        self.pieceIdex[piece] = (x, y)
+        self.pieceIndex[piece] = (x, y)
 
 
     def remove(self, piece):
-        (x, y) = self.pieceIdex.pop(piece)
-        self.board[y][x].remove(piece)
+        (x, y) = self.pieceIndex.pop(piece)
+        cell = self.get(x, y)
+        cell.remove(piece)
+        return (x, y)
 
 
     def get(self, x, y):

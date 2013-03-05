@@ -29,6 +29,13 @@ def main():
     board.place(x, y, "bG1")
     print board
     time.sleep(1)
+    board.remove("bG1")
+    print board
+    time.sleep(1)
+    (x, y) = board.get_ur_xy(1, 0)
+    board.place(x, y, "bG1")
+    print board
+    time.sleep(1)
 
 
 if __name__ == '__main__':
