@@ -50,7 +50,7 @@ class Board(object):
                 row.insert(0, [])
 
 
-    def place(self, x, y, piece):
+    def place(self, (x, y), piece):
         "Place a piece in the board position (x, y)"
         xx = self.ref0x+x
         yy = self.ref0y+y
@@ -70,14 +70,18 @@ class Board(object):
         self.pieceIndex[piece] = (x, y)
 
 
+    def locate(self, piece):
+        return self.pieceIndex[piece]
+
+
     def remove(self, piece):
         (x, y) = self.pieceIndex.pop(piece)
-        cell = self.get(x, y)
+        cell = self.get((x, y))
         cell.remove(piece)
         return (x, y)
 
 
-    def get(self, x, y):
+    def get(self, (x, y)):
         xx = self.ref0x + x
         yy = self.ref0y + y
         res = []
@@ -90,10 +94,30 @@ class Board(object):
         return res
 
 
+    def get_surrounding(self, (x, y)):
+        """
+        returns a list with the surrounding positions
+        """
+        return [(x-1, y), (x+1, y), (x, y-1), (x,y+1)]
+
+
 class HexBoard(Board):
     """Hexagonal Tile Board"""
     def __init__(self):
         super(HexBoard, self).__init__()
+
+
+    def get_surrounding(self, (x, y)):
+        """
+        returns a list with the surrounding positions
+        """
+        res = super(HexBoard, self).get_surrounding((x, y))
+        p = y % 2
+        if p == 0:
+            res.extend([(x-1, y-1), (x-1, y+1)])
+        else:
+            res.extend([(x+1, y-1), (x+1, y+1)])
+        return res
 
 
     def get_ul_xy(self, x, y):
@@ -169,7 +193,7 @@ class HexBoard(Board):
             res += "\n"
             res += "  " * p
             for j in range(firstCol, numCols):
-                value = self.get(j, i)
+                value = self.get((j, i))
                 if len(value) != 0:
                     value = value[0][:3]
                 else:
