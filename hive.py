@@ -22,7 +22,7 @@ class Hive(object):
         #   - check if the end position is free unless is a move on top
         #   - if the move is not a jump
         #     - check that the end position is in the periphery of the board
-
+        pass
 
     def one_hive(self, piece):
         """Check if removing a piece doesn't break the one hive rule."""
