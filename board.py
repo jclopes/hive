@@ -82,8 +82,16 @@ class Board(object):
 
 
     def get(self, (x, y)):
+        """
+        returns the piece contained in the cell (x,y)
+        """
+
         xx = self.ref0x + x
         yy = self.ref0y + y
+
+        if xx < 0 or yy < 0:
+            return []
+
         res = []
         try:
             res = self.board[yy][xx]
