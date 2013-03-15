@@ -104,9 +104,10 @@ class Board(object):
 
     def get_surrounding(self, (x, y)):
         """
-        returns a list with the surrounding positions
+        Returns a list with the surrounding positions sorted clockwise starting
+        from the left
         """
-        return [(x-1, y), (x+1, y), (x, y-1), (x,y+1)]
+        return [(x-1, y), (x, y-1), (x+1, y), (x, y+1)]
 
 
 class HexBoard(Board):
@@ -117,18 +118,21 @@ class HexBoard(Board):
 
     def get_surrounding(self, (x, y)):
         """
-        returns a list with the surrounding positions
+        Returns a list with the surrounding positions sorted clockwise starting
+        from the left
         """
         res = super(HexBoard, self).get_surrounding((x, y))
         p = y % 2
         if p == 0:
-            res.extend([(x-1, y-1), (x-1, y+1)])
+            res.insert(1, (x-1, y-1))
+            res.insert(5, (x-1, y+1))
         else:
-            res.extend([(x+1, y-1), (x+1, y+1)])
+            res.insert(2, (x+1, y-1))
+            res.insert(4, (x+1, y+1))
         return res
 
 
-    def get_ul_xy(self, x, y):
+    def get_ul_xy(self, (x, y)):
         """
         Get X;Y coordinates for the uper-left Cell
         """
@@ -138,7 +142,7 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_ur_xy(self, x, y):
+    def get_ur_xy(self, (x, y)):
         """
         Get X;Y coordinates for the uper-right Cell
         """
@@ -148,7 +152,7 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_ll_xy(self, x, y):
+    def get_ll_xy(self, (x, y)):
         """
         Get X;Y coordinates for the lower-left Cell
         """
@@ -158,7 +162,7 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_lr_xy(self, x, y):
+    def get_lr_xy(self, (x, y)):
         """
         Get X;Y coordinates for the lower-right Cell
         """
@@ -168,14 +172,14 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_l_xy(self, x, y):
+    def get_l_xy(self, (x, y)):
         """
         Get X;Y coordinates for the left Cell
         """
         return (x-1, y)
 
 
-    def get_r_xy(self, x, y):
+    def get_r_xy(self, (x, y)):
         """
         Get X;Y coordinates for the right Cell
         """

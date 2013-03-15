@@ -8,13 +8,13 @@ class TestHive(TestCase):
         self.hive = Hive()
         self.hive.board.place((0, 0), "wS1")
         self.hive.board.place((1, 0), "bS1")
-        (x, y) = self.hive.board.get_ll_xy(0, 0)
+        (x, y) = self.hive.board.get_ll_xy((0, 0))
         self.hive.board.place((x, y), "wQ1")
-        (x, y) = self.hive.board.get_lr_xy(1, 0)
+        (x, y) = self.hive.board.get_lr_xy((1, 0))
         self.hive.board.place((x, y), "bA1")
-        (x, y) = self.hive.board.get_ul_xy(0, 0)
+        (x, y) = self.hive.board.get_ul_xy((0, 0))
         self.hive.board.place((x, y), "wS2")
-        (x, y) = self.hive.board.get_r_xy(1, 0)
+        (x, y) = self.hive.board.get_r_xy((1, 0))
         self.hive.board.place((x, y), "bG1")
 
 
