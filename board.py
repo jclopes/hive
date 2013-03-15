@@ -83,7 +83,7 @@ class Board(object):
 
     def get(self, (x, y)):
         """
-        returns the piece contained in the cell (x,y)
+        Returns what is contained in the cell (x,y)
         """
 
         xx = self.ref0x + x
