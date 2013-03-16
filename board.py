@@ -223,13 +223,3 @@ class HexBoard(Board):
         res += "\n"
 
         return res
-
-
-class Piece(object):
-    """Representation of Playing Piece"""
-    def __init__(self, color, kind, number):
-        super(Cell, self).__init__()
-        self.color = color
-        self.kind = kind
-        self.number = number
-
