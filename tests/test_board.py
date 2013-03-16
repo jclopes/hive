@@ -26,7 +26,7 @@ class TestHexBoard(TestCase):
 
 
 class TestBoard(TestCase):
-    """docstring for TestBoa"""
+    """Verify Board class logic"""
 
     def setUp(self):
         self.board = Board()
