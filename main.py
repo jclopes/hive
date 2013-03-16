@@ -3,9 +3,35 @@
 import time
 import sys
 from board import HexBoard
+from hive import Hive
+
+
+class HiveShellClient(object):
+    """docstring for HiveShellClient"""
+
+    def __init__(self):
+        super(HiveShellClient, self).__init__()
+        self.hive = Hive()
+        self.input = sys.stdin
+
+
+    def run(self):
+        while True:
+            print self.hive
+            print "play: ",
+            try:
+                cmd = self.input.readline()
+            except KeyboardInterrupt, e:
+                break
+
+        print "\nThanks for playing. Have a nice day!"
 
 
 def main():
+
+    game = HiveShellClient()
+    game.run()
+
     board = HexBoard()
     board.place((0, 0), "wS1")
     print board
