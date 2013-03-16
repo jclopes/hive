@@ -21,3 +21,17 @@ class TestHive(TestCase):
     def test_one_hive_rule(self):
         self.assertFalse(self.hive.one_hive("wS1"))
         self.assertTrue(self.hive.one_hive("wS2"))
+
+
+    def test_bee_moves(self):
+        beePos = self.hive.board.locate("wQ1")
+        expected = [(-1, 0), (0, 1)]
+        self.assertEquals(expected, self.hive.bee_moves(beePos))
+
+        beePos = self.hive.board.locate("wS1")
+        expected = []
+        self.assertEquals(expected, self.hive.bee_moves(beePos))
+
+        beePos = self.hive.board.locate("wS2")
+        expected = [(-1, 0), (0, -1)]
+        self.assertEquals(expected, self.hive.bee_moves(beePos))

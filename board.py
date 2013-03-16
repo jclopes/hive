@@ -102,6 +102,10 @@ class Board(object):
         return res
 
 
+    def is_cell_free(self, cell):
+        return self.get(cell) == []
+
+
     def get_surrounding(self, (x, y)):
         """
         Returns a list with the surrounding positions sorted clockwise starting
@@ -187,7 +191,7 @@ class HexBoard(Board):
 
 
     def __repr__(self):
-        res = ""
+        res = "\n"
         firstCol = -self.ref0x
         firstRow = -self.ref0y
         numCols = len(self.board[0]) + firstCol
