@@ -83,7 +83,8 @@ class Board(object):
 
     def get(self, (x, y)):
         """
-        Returns what is contained in the cell (x,y)
+        Returns pieces contained in the cell (x,y) in the same order as they
+        were placed into the cell.
         """
 
         xx = self.ref0x + x
