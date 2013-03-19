@@ -26,7 +26,7 @@ Notation:
 
  - Move:
     * A move is represented by 3 sections.
-    * The first is the notation of the moving piece.
+    * The first section is the notation of the moving piece.
     * The second is the point of contact with the piece where the move stops.
     * The third is the notation of the piece refered by the contact point.
     * ex: "wG2/*bA1" - the second white grasshopper is positioned touching the first black ant on its left-upper side.
@@ -40,6 +40,8 @@ Notation:
     * `*/` - moving piece is place touching the target piece at its lower-right face
     * `=*` - moving piece is place on top of the target piece
 
+ - Starting Piece:
+    The only exception to the previous notation is the starting piece of the first player. The first move of the first player is just the name of a piece since the placement of the 1st piece is always fixed.
 
 Board:
 -----
