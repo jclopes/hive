@@ -12,8 +12,22 @@ class Hive(object):
         self.board = HexBoard()
 
 
-    def vlidate_move(self, moving_piece, ref_pieace, ref_position):
-        # - check if moving this pieace won't break the hive
+    def move_piece(self, piece, cell):
+        """
+        Verifies if a piece can be played from hand into a given cell.
+        """
+        raise NotImplemented
+
+
+    def place_piece(self, piece, cell):
+        """
+        Verifies if a piece can be played from hand into a given cell.
+        """
+        raise NotImplemented
+
+
+    def validate_move_piece(self, moving_piece, ref_piece, ref_position):
+        # - check if moving this piece won't break the hive
         #   - check if the piece is touching more then one piece
         #   - check that from one of the touching pieces you can reach all other
         #     pieces that where touching the moving piece
@@ -23,7 +37,14 @@ class Hive(object):
         #   - check if the end position is free unless is a move on top
         #   - if the move is not a jump
         #     - check that the end position is in the periphery of the board
-        pass
+        raise NotImplemented
+
+
+    def validate_place_piece(self, piece, cell):
+        """
+        Verifies if a piece can be played from hand into a given cell.
+        """
+        raise NotImplemented
 
 
     def one_hive(self, piece):
@@ -82,13 +103,6 @@ class Hive(object):
     def _occupied_surroundings(self, cell):
         surroundings = self.board.get_surrounding(cell)
         return [c for c in surroundings if len(self.board.get(c)) > 0]
-
-
-    def place_pice(self, pice, cell):
-        """
-        Verifies if a pice can be played from hand into a given cell.
-        """
-        raise NotImplemented
 
 
     def __repr__(self):
