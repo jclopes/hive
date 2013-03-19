@@ -15,14 +15,61 @@ class HiveShellClient(object):
         self.input = sys.stdin
 
 
+    def parse_cmd(self, cmd):
+        if len(cmd) == 3:
+            movingPiece = cmd
+            pointOfContact = None
+            refPiece = None
+        else:
+            movingPiece = cmd[:3]
+            pointOfContact = cmd[3:5]
+            refPiece = cmd[5:]
+        return (movingPiece, pointOfContact, refPiece)
+
+
+    def pocp_to_cell(self, pointOfContact, refPiece):
+        refCell = self.hive.board.locate(refPiece)
+        if pointOfContact == '|*':
+            return self.hive.board.get_l_xy(refCell)
+        if pointOfContact == '/*':
+            return self.hive.board.get_ul_xy(refCell)
+        if pointOfContact == '*\\':
+            return self.hive.board.get_ur_xy(refCell)
+        if pointOfContact == '*|':
+            return self.hive.board.get_r_xy(refCell)
+        if pointOfContact == '*/':
+            return self.hive.board.get_lr_xy(refCell)
+        if pointOfContact == '\\*':
+            return self.hive.board.get_ll_xy(refCell)
+        if pointOfContact == '=*':
+            return refCell
+
+
+    def exec_cmd(self, cmd):
+        (movingPiece, pointOfContact, refPiece) = self.parse_cmd(cmd)
+        if pointOfContact is None:
+            if self.hive.turn == 1:
+                self.hive.board.place((0, 0), movingPiece)
+        else:
+            # if the piece is on the board
+            # first remove the pice from it's current location
+            startCell = self.hive.board.locate(movingPiece)
+            targetCell = self.pocp_to_cell(pointOfContact, refPiece)
+            if not startCell is None:
+                self.hive.board.remove(movingPiece)
+            self.hive.board.place(targetCell, movingPiece)
+
+
     def run(self):
         while True:
+            self.hive.turn += 1
             print self.hive
-            print "play: ",
+            print "player %s play: " % (2 - (self.hive.turn % 2)),
             try:
                 cmd = self.input.readline()
             except KeyboardInterrupt, e:
                 break
+            self.exec_cmd(cmd.strip())
 
         print "\nThanks for playing. Have a nice day!"
 
