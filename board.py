@@ -71,7 +71,13 @@ class Board(object):
 
 
     def locate(self, piece):
-        return self.pieceIndex[piece]
+        res = None
+        try:
+            res = self.pieceIndex[piece]
+        except KeyError:
+            pass
+
+        return res
 
 
     def remove(self, piece):
