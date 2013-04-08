@@ -1,4 +1,6 @@
 from board import HexBoard
+from piece import HivePiece
+
 
 class Hive(object):
     """
@@ -43,8 +45,19 @@ class Hive(object):
     def validate_place_piece(self, piece, cell):
         """
         Verifies if a piece can be played from hand into a given cell.
+        The piece must be placed touching at least one piece of the same color
+        and can only be touching pieces of the same color.
         """
-        raise NotImplemented
+        playedColor = piece.color
+        occupiedCells = self._occupied_surroundings(cell)
+        visiblePiecesColor = [pieces[-1].color for pieces in occupied]
+        res = True
+        for c in visiblePiecesColor:
+            if c != playedColor:
+                res = False
+                break
+
+        return res
 
 
     def one_hive(self, piece):
