@@ -81,10 +81,10 @@ class Board(object):
 
 
     def remove(self, piece):
-        (x, y) = self.pieceIndex.pop(piece)
-        cell = self.get((x, y))
-        cell.remove(piece)
-        return (x, y)
+        cell = self.pieceIndex.pop(piece)
+        cellPieces = self.get(cell)
+        cellPieces.remove(piece)
+        return cell
 
 
     def get(self, (x, y)):
@@ -201,31 +201,34 @@ class HexBoard(Board):
         res = "\n"
         firstCol = -self.ref0x
         firstRow = -self.ref0y
-        numCols = len(self.board[0]) + firstCol
-        numRows = len(self.board) + firstRow
-        for i in range(firstRow, numRows):
+        lastCol = len(self.board[0]) + firstCol
+        lastRow = len(self.board) + firstRow
+        for i in range(firstRow, lastRow):
             p = i % 2
-            if i > firstRow and p == 1:
-                res += " \\"
+            # Top of the cells is also the bottom of the cells
+            # for the previous row.
+            if i > firstRow:
+                res += " \\" * p
             else:
                 res += "  " * p
-            for j in range(firstCol, numCols):
+            for j in range(firstCol, lastCol):
                 res += " / \\"
             if i > firstRow and p == 0:
                 res += " /"
             res += "\n"
+            # Center of the cells
             res += "  " * p
-            for j in range(firstCol, numCols):
-                value = self.get((j, i))
-                if len(value) != 0:
-                    value = value[0][:3]
+            for j in range(firstCol, lastCol):
+                pieces = self.get((j, i))
+                if len(pieces) != 0:
+                    pieceName = str(pieces[-1])[:3]
                 else:
-                    value = "   "
-                res += "|" + value
+                    pieceName = "   "
+                res += "|" + pieceName
             res += "|\n"
-        p = (numRows - 1) % 2
+        p = (lastRow - 1) % 2
         res += "  " * p
-        for j in range(firstCol, numCols):
+        for j in range(firstCol, lastCol):
             res += " \\ /"
         res += "\n"
 
