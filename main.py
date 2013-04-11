@@ -28,21 +28,20 @@ class HiveShellClient(object):
 
 
     def pocp_to_cell(self, pointOfContact, refPiece):
-        refCell = self.hive.board.locate(refPiece)
         if pointOfContact == '|*':
-            return self.hive.board.get_l_xy(refCell)
+            return self.hive.board.poc2cell(refPiece, 1)
         if pointOfContact == '/*':
-            return self.hive.board.get_ul_xy(refCell)
+            return self.hive.board.poc2cell(refPiece, 2)
         if pointOfContact == '*\\':
-            return self.hive.board.get_ur_xy(refCell)
+            return self.hive.board.poc2cell(refPiece, 3)
         if pointOfContact == '*|':
-            return self.hive.board.get_r_xy(refCell)
+            return self.hive.board.poc2cell(refPiece, 4)
         if pointOfContact == '*/':
-            return self.hive.board.get_lr_xy(refCell)
+            return self.hive.board.poc2cell(refPiece, 5)
         if pointOfContact == '\\*':
-            return self.hive.board.get_ll_xy(refCell)
+            return self.hive.board.poc2cell(refPiece, 6)
         if pointOfContact == '=*':
-            return refCell
+            return self.hive.board.poc2cell(refPiece, 0)
 
 
     def exec_cmd(self, cmd):
