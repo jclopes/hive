@@ -1,7 +1,17 @@
 # board.py
-# classes that represent the game rules
+# classes that represent generic boards
 
 # Board layout:
+#
+#  --- --- ---
+# |0,0|1,0|2,0|
+#  --- --- ---
+# |0,1|1,1|2,1|
+#  --- --- ---
+# |0,2|1,2|2,2|
+#  --- --- ---
+
+# HexBoard layout:
 #
 #  / \ / \ / \ / \
 # |0,0|1,0|2,0|3,0|
@@ -12,7 +22,23 @@
 #  \ / \ / \ / \ / \
 #   |0,3|1,3|2,3|3,3|
 #    \ / \ / \ / \ /
+#
+# Point of Contact:
+#
+#    2/ \3
+#   1|   |4
+#    6\ /5
+#
+# 1 => w (west)
+# 2 => nw (north-west)
+# 3 => ne (north-east)
+# 4 => e (east)
+# 5 => se (south-east)
+# 6 => sw (south-west)
+# 7 => o (origin/on-top)
 
+# TODO: replace all references of left, right, upper, lower with
+# cardinal directions (north, south, east, west)
 
 class Board(object):
     """
@@ -121,8 +147,23 @@ class Board(object):
         return [(x-1, y), (x, y-1), (x+1, y), (x, y+1)]
 
 
+    def get_w_xy(self, (x, y)):
+        """
+        Get X;Y coordinates for the west/left Cell
+        """
+        return (x-1, y)
+
+
+    def get_e_xy(self, (x, y)):
+        """
+        Get X;Y coordinates for the east/right Cell
+        """
+        return (x+1, y)
+
+
 class HexBoard(Board):
     """Hexagonal Tile Board"""
+
     def __init__(self):
         super(HexBoard, self).__init__()
 
@@ -141,6 +182,33 @@ class HexBoard(Board):
             res.insert(2, (x+1, y-1))
             res.insert(4, (x+1, y+1))
         return res
+
+
+    def poc2cell(self, refPiece, pointOfContact):
+        """
+        Translates a relative position (piece, point of contact) into
+        a board cell (x, y).
+
+        pointOfContact in [0, 1, 2, 3, 4, 5, 6] and translates to:
+        0 => o (origin/on-top)
+        1 => w (west)
+        2 => nw (north-west)
+        3 => ne (north-east)
+        4 => e (east)
+        5 => se (south-east)
+        6 => sw (south-west)
+        """
+        poc2func = {
+            0: lambda x: x,
+            1: self.get_l_xy,
+            2: self.get_ul_xy,
+            3: self.get_ur_xy,
+            4: self.get_r_xy,
+            5: self.get_lr_xy,
+            6: self.get_ll_xy
+        }
+        refCell = self.locate(refPiece)
+        return poc2func[pointOfContact](refCell)
 
 
     def get_ul_xy(self, (x, y)):
