@@ -42,15 +42,19 @@ class Hive(object):
         raise NotImplemented
 
 
-    def validate_place_piece(self, piece, cell):
+    def validate_place_piece(self, piece, ref_piece, ref_direction):
         """
         Verifies if a piece can be played from hand into a given cell.
         The piece must be placed touching at least one piece of the same color
         and can only be touching pieces of the same color.
         """
+        cell = self.board.poc2cell(ref_piece, ref_direction)
         playedColor = piece.color
+
         occupiedCells = self._occupied_surroundings(cell)
-        visiblePiecesColor = [pieces[-1].color for pieces in occupied]
+        visiblePiecesColor = [
+            self.board.get(oCell)[-1].color for oCell in occupiedCells
+        ]
         res = True
         for c in visiblePiecesColor:
             if c != playedColor:

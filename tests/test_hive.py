@@ -47,3 +47,15 @@ class TestHive(TestCase):
         beePos = self.hive.board.locate(self.piece['wS2'])
         expected = [(-1, 0), (0, -1)]
         self.assertEquals(expected, self.hive.bee_moves(beePos))
+
+
+    def test_validate_place_piece(self):
+        wA1 = HivePiece('w', 'A', 1)
+        bQ1 = HivePiece('b', 'Q', 1)
+
+        self.assertTrue(
+            self.hive.validate_place_piece(wA1, self.piece['wS1'], 1)
+        )
+        self.assertFalse(
+            self.hive.validate_place_piece(bQ1, self.piece['wS1'], 1)
+        )
