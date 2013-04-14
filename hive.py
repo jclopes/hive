@@ -161,12 +161,12 @@ class Hive(object):
                 if dy < 0:
                     moveDir = 2  # nw
                 else:
-                    moveDir = 3  # sw
+                    moveDir = 6  # sw
             else:
                 if dy < 0:
-                    moveDir = 5  # ne
+                    moveDir = 3  # ne
                 else:
-                    moveDir = 6  # se
+                    moveDir = 5  # se
 
         # are all in-between cells occupied?
         cell = self.board.get_dir_cell(startingCell, moveDir)
