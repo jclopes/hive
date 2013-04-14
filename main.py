@@ -4,7 +4,7 @@ import time
 import sys
 from board import HexBoard
 from hive import Hive
-
+from piece import HivePiece
 
 class HiveShellClient(object):
     """docstring for HiveShellClient"""
@@ -13,7 +13,27 @@ class HiveShellClient(object):
         super(HiveShellClient, self).__init__()
         self.hive = Hive()
         self.input = sys.stdin
+        self.player = {1: None, 2: None}
 
+
+    def piece_set(self, color):
+        """
+        Return a full set of hive pieces
+        """
+        pieceSet = {}
+        for i in xrange(3):
+            ant = HivePiece(color, 'A', i+1)
+            pieceSet[str(ant)] = ant
+            grasshopper = HivePiece(color, 'G', i+1)
+            pieceSet[str(grasshopper)] = grasshopper
+        for i in xrange(2):
+            spider = HivePiece(color, 'S', i+1)
+            pieceSet[str(spider)] = spider
+            beetle = HivePiece(color, 'B', i+1)
+            pieceSet[str(beetle)] = beetle
+        queen = HivePiece(color, 'Q', 1)
+        pieceSet[str(queen)] = queen
+        return pieceSet
 
     def parse_cmd(self, cmd):
         if len(cmd) == 3:
@@ -27,7 +47,7 @@ class HiveShellClient(object):
         return (movingPiece, pointOfContact, refPiece)
 
 
-    def pocp_to_cell(self, pointOfContact, refPiece):
+    def ppoc2cell(self, pointOfContact, refPiece):
         if pointOfContact == '|*':
             return self.hive.board.poc2cell(refPiece, 1)
         if pointOfContact == '/*':
@@ -44,33 +64,63 @@ class HiveShellClient(object):
             return self.hive.board.poc2cell(refPiece, 0)
 
 
-    def exec_cmd(self, cmd):
-        (movingPiece, pointOfContact, refPiece) = self.parse_cmd(cmd)
+    def poc2direction(self, pointOfContact):
+        if pointOfContact == '|*':
+            return 1
+        if pointOfContact == '/*':
+            return 2
+        if pointOfContact == '*\\':
+            return 3
+        if pointOfContact == '*|':
+            return 4
+        if pointOfContact == '*/':
+            return 5
+        if pointOfContact == '\\*':
+            return 6
+        if pointOfContact == '=*':
+            return 0
+
+
+    def exec_cmd(self, cmd, turn):
+        (actPiece, pointOfContact, refPiece) = self.parse_cmd(cmd)
+        actPlayer = (2 - (turn % 2))
         if pointOfContact is None:
-            if self.hive.turn == 1:
-                self.hive.board.place((0, 0), movingPiece)
+            if turn == 1:
+                self.hive.board.place((0, 0), self.player[actPlayer][actPiece])
         else:
             # if the piece is on the board
             # first remove the pice from it's current location
-            startCell = self.hive.board.locate(movingPiece)
-            targetCell = self.pocp_to_cell(pointOfContact, refPiece)
-            if not startCell is None:
-                self.hive.board.remove(movingPiece)
-            self.hive.board.place(targetCell, movingPiece)
+            startCell = self.hive.board.locate(actPiece)
+            targetCell = self.ppoc2cell(pointOfContact, refPiece)
+            if startCell is None:
+                p = self.player[actPlayer][actPiece]
+                if not self.hive.validate_place_piece(
+                    p, refPiece, self.poc2direction(pointOfContact)
+                ):
+                    return False
+            else:
+                self.hive.board.remove(actPiece)
+            self.hive.board.place(targetCell, actPiece)
+        return True
 
 
     def run(self):
+        self.player[1] = self.piece_set('w')
+        self.player[2] = self.piece_set('b')
         while True:
-            self.hive.turn += 1
+            turn = self.hive.turn + 1
             print self.hive
             print "player %s play: " % (2 - (self.hive.turn % 2)),
             try:
                 cmd = self.input.readline()
             except KeyboardInterrupt, e:
                 break
-            self.exec_cmd(cmd.strip())
+            if self.exec_cmd(cmd.strip(), turn):
+                self.hive.turn += 1
+            else:
+                print "invalid play!"
 
-        print "\nThanks for playing. Have a nice day!"
+        print "\nThanks for playing Hive. Have a nice day!"
 
 
 def main():
