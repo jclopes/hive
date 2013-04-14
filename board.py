@@ -13,15 +13,17 @@
 
 # HexBoard layout:
 #
-#  / \ / \ / \ / \
-# |0,0|1,0|2,0|3,0|
-#  \ / \ / \ / \ / \
-#   |0,1|1,1|2,1|3,1|
-#  / \ / \ / \ / \ /
-# |0,2|1,2|2,2|3,2|
-#  \ / \ / \ / \ / \
-#   |0,3|1,3|2,3|3,3|
-#    \ / \ / \ / \ /
+#  / \ / \ / \ / \ / \
+# |0,0|1,0|2,0|3,0|4,0|
+#  \ / \ / \ / \ / \ / \
+#   |0,1|1,1|2,1|3,1|4,1|
+#  / \ / \ / \ / \ / \ /
+# |0,2|1,2|2,2|3,2|4,2|
+#  \ / \ / \ / \ / \ / \
+#   |0,3|1,3|2,3|3,3|4,3|
+#  / \ / \ / \ / \ / \ /
+# |0,4|1,4|2,4|3,4|4,4|
+#  \ / \ / \ / \ / \ /
 #
 # Point of Contact:
 #
@@ -188,8 +190,17 @@ class HexBoard(Board):
         """
         Translates a relative position (piece, point of contact) into
         a board cell (x, y).
+        """
+        refCell = self.locate(refPiece)
+        return self.get_dir_cell(refCell, pointOfContact)
 
-        pointOfContact in [0, 1, 2, 3, 4, 5, 6] and translates to:
+
+    def get_dir_cell(self, cell, direction):
+        """
+        Translates a relative position (piece, point of contact) into
+        a board cell (x, y).
+
+        direction in [0, 1, 2, 3, 4, 5, 6] and translates to:
         0 => o (origin/on-top)
         1 => w (west)
         2 => nw (north-west)
@@ -198,20 +209,19 @@ class HexBoard(Board):
         5 => se (south-east)
         6 => sw (south-west)
         """
-        poc2func = {
+        dir2func = {
             0: lambda x: x,
-            1: self.get_l_xy,
-            2: self.get_ul_xy,
-            3: self.get_ur_xy,
-            4: self.get_r_xy,
-            5: self.get_lr_xy,
-            6: self.get_ll_xy
+            1: self.get_w_xy,
+            2: self.get_nw_xy,
+            3: self.get_ne_xy,
+            4: self.get_e_xy,
+            5: self.get_se_xy,
+            6: self.get_sw_xy
         }
-        refCell = self.locate(refPiece)
-        return poc2func[pointOfContact](refCell)
+        return dir2func[direction](cell)
 
 
-    def get_ul_xy(self, (x, y)):
+    def get_nw_xy(self, (x, y)):
         """
         Get X;Y coordinates for the uper-left Cell
         """
@@ -221,7 +231,7 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_ur_xy(self, (x, y)):
+    def get_ne_xy(self, (x, y)):
         """
         Get X;Y coordinates for the uper-right Cell
         """
@@ -231,7 +241,7 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_ll_xy(self, (x, y)):
+    def get_sw_xy(self, (x, y)):
         """
         Get X;Y coordinates for the lower-left Cell
         """
@@ -241,7 +251,7 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_lr_xy(self, (x, y)):
+    def get_se_xy(self, (x, y)):
         """
         Get X;Y coordinates for the lower-right Cell
         """
@@ -251,14 +261,14 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_l_xy(self, (x, y)):
+    def get_w_xy(self, (x, y)):
         """
         Get X;Y coordinates for the left Cell
         """
         return (x-1, y)
 
 
-    def get_r_xy(self, (x, y)):
+    def get_e_xy(self, (x, y)):
         """
         Get X;Y coordinates for the right Cell
         """

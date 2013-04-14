@@ -20,14 +20,16 @@ class TestHive(TestCase):
         self.hive = Hive()
         self.hive.board.place((0, 0), self.piece['wS1'])
         self.hive.board.place((1, 0), self.piece['bS1'])
-        (x, y) = self.hive.board.get_ll_xy((0, 0))
+        (x, y) = self.hive.board.get_sw_xy((0, 0))
         self.hive.board.place((x, y), self.piece['wQ1'])
-        (x, y) = self.hive.board.get_lr_xy((1, 0))
+        (x, y) = self.hive.board.get_se_xy((1, 0))
         self.hive.board.place((x, y), self.piece['bA1'])
-        (x, y) = self.hive.board.get_ul_xy((0, 0))
+        (x, y) = self.hive.board.get_nw_xy((0, 0))
         self.hive.board.place((x, y), self.piece['wS2'])
-        (x, y) = self.hive.board.get_r_xy((1, 0))
+        (x, y) = self.hive.board.get_e_xy((1, 0))
         self.hive.board.place((x, y), self.piece['bG1'])
+        (x, y) = self.hive.board.get_w_xy((0, 0))
+        self.hive.board.place((x, y), self.piece['wB1'])
 
 
     def test_one_hive(self):
