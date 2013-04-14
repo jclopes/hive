@@ -117,6 +117,67 @@ class Hive(object):
         return available_moves
 
 
+    def valid_grasshopper_move(self, startingCell, endCell):
+        # TODO: add function to HexBoard that find cells in a straight line
+
+        # is the move in only one direction?
+        (sx, sy) = startingCell
+        (ex, ey) = endCell
+        dx = ex - sx
+        dy = ey - sy
+        p = sy % 2  # starting from an even or odd line?
+
+        moveDir = None
+        # horizontal jump
+        if dy == 0:
+            # must jump atleast over one piece
+            if abs(dx) <= 1:
+                return False
+
+            # moving west
+            if dx < 0:
+                moveDir = 1  # w
+            # moving east
+            else:
+                moveDir = 4  # e
+
+        # diagonal jump
+        if dy != 0:
+            # must jump atleast over one piece
+            if abs(dy) == 1:
+                return False
+
+            # must move in a diagonal with slope = 2
+            nx = (dy + p) / 2
+            if abs(dx) != abs(nx):
+                return False
+
+            if dx < 0:
+                if dy < 0:
+                    moveDir = 2  # nw
+                else:
+                    moveDir = 3  # sw
+            else:
+                if dy < 0:
+                    moveDir = 5  # ne
+                else:
+                    moveDir = 6  # se
+
+        # are all in-between cells occupied?
+        cell = self.board.get_dir_cell(startingCell, moveDir)
+        while cell != endCell:
+            pieces = self.board.get(cell)
+            if pieces == []:
+                return False
+            cell = self.board.get_dir_cell(cell, moveDir)
+
+        # is the endCell free?
+        if self.board.get(endCell) != []:
+            return False
+
+        return True
+
+
     def _occupied_surroundings(self, cell):
         surroundings = self.board.get_surrounding(cell)
         return [c for c in surroundings if len(self.board.get(c)) > 0]

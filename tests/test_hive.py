@@ -51,6 +51,13 @@ class TestHive(TestCase):
         self.assertEquals(expected, self.hive.bee_moves(beePos))
 
 
+    def test_grasshopper_moves(self):
+        starting_cell = (2, 0)
+        end_cell = (-2, 0)
+        self.assertTrue(
+            self.hive.valid_grasshopper_move(starting_cell, end_cell)
+        )
+
     def test_validate_place_piece(self):
         wA1 = HivePiece('w', 'A', 1)
         bQ1 = HivePiece('b', 'Q', 1)
