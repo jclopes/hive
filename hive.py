@@ -18,6 +18,9 @@ class Hive(object):
         """
         Verifies if a piece can be played from hand into a given cell.
         """
+        # the piece is on the board
+        # the piece can be moved
+        # the move is valid
         raise NotImplemented
 
 
@@ -25,6 +28,8 @@ class Hive(object):
         """
         Verifies if a piece can be played from hand into a given cell.
         """
+        # the piece was not played yet
+        # the placement is valid
         raise NotImplemented
 
 
@@ -89,7 +94,7 @@ class Hive(object):
 
     def bee_moves(self, cell):
         """
-        Get possible bee_moves.
+        Get possible bee_moves from cell.
 
         A bee can move to a adjacent target position only if:
         - target position is free

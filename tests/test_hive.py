@@ -8,9 +8,10 @@ class TestHive(TestCase):
 
     # Pieces used for testing
     piece = {
-        'wS1': HivePiece('w', 'S', 1),
         'wQ1': HivePiece('w', 'Q', 1),
+        'wS1': HivePiece('w', 'S', 1),
         'wS2': HivePiece('w', 'S', 2),
+        'wB1': HivePiece('w', 'B', 1),
         'bS1': HivePiece('b', 'S', 1),
         'bA1': HivePiece('b', 'A', 1),
         'bG1': HivePiece('b', 'G', 1),
@@ -39,7 +40,7 @@ class TestHive(TestCase):
 
     def test_bee_moves(self):
         beePos = self.hive.board.locate(self.piece['wQ1'])
-        expected = [(-1, 0), (0, 1)]
+        expected = [(-2, 1), (0, 1)]
         self.assertEquals(expected, self.hive.bee_moves(beePos))
 
         beePos = self.hive.board.locate(self.piece['wS1'])
@@ -47,8 +48,16 @@ class TestHive(TestCase):
         self.assertEquals(expected, self.hive.bee_moves(beePos))
 
         beePos = self.hive.board.locate(self.piece['wS2'])
-        expected = [(-1, 0), (0, -1)]
+        expected = [(-2, -1), (0, -1)]
         self.assertEquals(expected, self.hive.bee_moves(beePos))
+
+
+    def test_ant_moves(self):
+        pass
+
+
+    def test_beetle_moves(self):
+        pass
 
 
     def test_grasshopper_moves(self):
