@@ -48,14 +48,28 @@ class Hive(object):
         raise NotImplemented
 
 
-    def place_piece(self, piece, cell):
+    def place_piece(self, piece, refPieceName=None, refDirection=None):
         """
         Verifies if a piece can be played from hand into a given cell.
         """
-        # the piece was not played yet
-        # the placement is valid
-        raise NotImplemented
+        # the piece was already played
+        if str(piece) in self.playedPieces:
+            return False
 
+        # if it's the first piece we put it at cell (0, 0)
+        if refPieceName is None and self.turn == 1:
+            cell = (0, 0)
+            self.board.place(cell, str(piece))
+            self.playedPieces[str(piece)] = {'piece': piece, 'cell': cell}
+            return cell
+
+        # the placement is valid
+        cell = self.poc2cell(refPieceName, refDirection)
+        if self._validate_place_piece(piece, cell):
+            self.board.place(cell, str(piece))
+            self.playedPieces[str(piece)] = {'piece': piece, 'cell': cell}
+
+        return cell
 
 
     def _validate_move_piece(self, moving_piece, cell):

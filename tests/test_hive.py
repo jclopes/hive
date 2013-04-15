@@ -19,18 +19,20 @@ class TestHive(TestCase):
 
     def setUp(self):
         self.hive = Hive()
-        self.hive.board.place((0, 0), self.piece['wS1'])
-        self.hive.board.place((1, 0), self.piece['bS1'])
-        (x, y) = self.hive.board.get_sw_xy((0, 0))
-        self.hive.board.place((x, y), self.piece['wQ1'])
-        (x, y) = self.hive.board.get_se_xy((1, 0))
-        self.hive.board.place((x, y), self.piece['bA1'])
-        (x, y) = self.hive.board.get_nw_xy((0, 0))
-        self.hive.board.place((x, y), self.piece['wS2'])
-        (x, y) = self.hive.board.get_e_xy((1, 0))
-        self.hive.board.place((x, y), self.piece['bG1'])
-        (x, y) = self.hive.board.get_w_xy((0, 0))
-        self.hive.board.place((x, y), self.piece['wB1'])
+        self.hive.turn += 1
+        self.hive.place_piece(self.piece['wS1'])
+        self.hive.turn += 1
+        self.hive.place_piece(self.piece['bS1'], 'wS1', 4)
+        self.hive.turn += 1
+        self.hive.place_piece(self.piece['wQ1'], 'wS1', 6)
+        self.hive.turn += 1
+        self.hive.place_piece(self.piece['bA1'], 'bS1', 5)
+        self.hive.turn += 1
+        self.hive.place_piece(self.piece['wS2'], 'wS1', 2)
+        self.hive.turn += 1
+        self.hive.place_piece(self.piece['bG1'], 'bS1', 4)
+        self.hive.turn += 1
+        self.hive.place_piece(self.piece['wB1'], 'wS1', 1)
 
 
     def test_one_hive(self):
@@ -86,8 +88,8 @@ class TestHive(TestCase):
 
         cell = self.hive.poc2cell(self.piece['wS1'], 1)
         self.assertTrue(
-            self.hive.validate_place_piece(wA1, self.piece['wS1'], 1)
+            self.hive._validate_place_piece(wA1, cell)
         )
         self.assertFalse(
-            self.hive.validate_place_piece(bQ1, self.piece['wS1'], 1)
+            self.hive._validate_place_piece(bQ1, cell)
         )
