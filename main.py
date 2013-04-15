@@ -49,19 +49,19 @@ class HiveShellClient(object):
 
     def ppoc2cell(self, pointOfContact, refPiece):
         if pointOfContact == '|*':
-            return self.hive.board.poc2cell(refPiece, 1)
+            return self.hive.poc2cell(refPiece, 1)
         if pointOfContact == '/*':
-            return self.hive.board.poc2cell(refPiece, 2)
+            return self.hive.poc2cell(refPiece, 2)
         if pointOfContact == '*\\':
-            return self.hive.board.poc2cell(refPiece, 3)
+            return self.hive.poc2cell(refPiece, 3)
         if pointOfContact == '*|':
-            return self.hive.board.poc2cell(refPiece, 4)
+            return self.hive.poc2cell(refPiece, 4)
         if pointOfContact == '*/':
-            return self.hive.board.poc2cell(refPiece, 5)
+            return self.hive.poc2cell(refPiece, 5)
         if pointOfContact == '\\*':
-            return self.hive.board.poc2cell(refPiece, 6)
+            return self.hive.poc2cell(refPiece, 6)
         if pointOfContact == '=*':
-            return self.hive.board.poc2cell(refPiece, 0)
+            return self.hive.poc2cell(refPiece, 0)
 
 
     def poc2direction(self, pointOfContact):
@@ -84,22 +84,18 @@ class HiveShellClient(object):
     def exec_cmd(self, cmd, turn):
         (actPiece, pointOfContact, refPiece) = self.parse_cmd(cmd)
         actPlayer = (2 - (turn % 2))
-        if pointOfContact is None:
-            if turn == 1:
-                self.hive.board.place((0, 0), self.player[actPlayer][actPiece])
+        # if the piece is on the board
+        # first remove the pice from it's current location
+        startCell = self.hive.locate(actPiece)
+        targetCell = self.ppoc2cell(pointOfContact, refPiece)
+        if startCell is None:
+            p = self.player[actPlayer][actPiece]
+            if not self.hive.place_piece(
+                p, refPiece, self.poc2direction(pointOfContact)
+            ):
+                return False
         else:
-            # if the piece is on the board
-            # first remove the pice from it's current location
-            startCell = self.hive.board.locate(actPiece)
-            targetCell = self.ppoc2cell(pointOfContact, refPiece)
-            if startCell is None:
-                p = self.player[actPlayer][actPiece]
-                if not self.hive.validate_place_piece(
-                    p, refPiece, self.poc2direction(pointOfContact)
-                ):
-                    return False
-            else:
-                self.hive.board.remove(actPiece)
+            self.hive.board.remove(actPiece)
             self.hive.board.place(targetCell, actPiece)
         return True
 
@@ -107,15 +103,15 @@ class HiveShellClient(object):
     def run(self):
         self.player[1] = self.piece_set('w')
         self.player[2] = self.piece_set('b')
+        self.hive.turn += 1
         while True:
-            turn = self.hive.turn + 1
             print self.hive
             print "player %s play: " % (2 - (self.hive.turn % 2)),
             try:
                 cmd = self.input.readline()
             except KeyboardInterrupt, e:
                 break
-            if self.exec_cmd(cmd.strip(), turn):
+            if self.exec_cmd(cmd.strip(), self.hive.turn):
                 self.hive.turn += 1
             else:
                 print "invalid play!"
