@@ -39,15 +39,15 @@ class TestHive(TestCase):
 
 
     def test_bee_moves(self):
-        beePos = self.hive.board.locate(self.piece['wQ1'])
+        beePos = self.hive.locate('wQ1')
         expected = [(-2, 1), (0, 1)]
         self.assertEquals(expected, self.hive.bee_moves(beePos))
 
-        beePos = self.hive.board.locate(self.piece['wS1'])
+        beePos = self.hive.locate('wS1')
         expected = []
         self.assertEquals(expected, self.hive.bee_moves(beePos))
 
-        beePos = self.hive.board.locate(self.piece['wS2'])
+        beePos = self.hive.locate('wS2')
         expected = [(-2, -1), (0, -1)]
         self.assertEquals(expected, self.hive.bee_moves(beePos))
 
@@ -79,10 +79,12 @@ class TestHive(TestCase):
             self.hive.valid_grasshopper_move(starting_cell, end_cell)
         )
 
+
     def test_validate_place_piece(self):
         wA1 = HivePiece('w', 'A', 1)
         bQ1 = HivePiece('b', 'Q', 1)
 
+        cell = self.hive.poc2cell(self.piece['wS1'], 1)
         self.assertTrue(
             self.hive.validate_place_piece(wA1, self.piece['wS1'], 1)
         )

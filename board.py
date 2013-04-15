@@ -25,7 +25,7 @@
 # |0,4|1,4|2,4|3,4|4,4|
 #  \ / \ / \ / \ / \ /
 #
-# Point of Contact:
+# Point of Contact / Direction:
 #
 #    2/ \3
 #   1|   |4
@@ -39,8 +39,9 @@
 # 6 => sw (south-west)
 # 7 => o (origin/on-top)
 
-# TODO: replace all references of left, right, upper, lower with
-# cardinal directions (north, south, east, west)
+# A 'cell' is a coordinate representation of a board position (x, y)
+# A 'piece' is an unique identifier of a playing piece (string)
+
 
 class Board(object):
     """
@@ -96,16 +97,6 @@ class Board(object):
 
         self.board[yy][xx].append(piece)
         self.pieceIndex[piece] = (x, y)
-
-
-    def locate(self, piece):
-        res = None
-        try:
-            res = self.pieceIndex[piece]
-        except KeyError:
-            pass
-
-        return res
 
 
     def remove(self, piece):
@@ -184,15 +175,6 @@ class HexBoard(Board):
             res.insert(2, (x+1, y-1))
             res.insert(4, (x+1, y+1))
         return res
-
-
-    def poc2cell(self, refPiece, pointOfContact):
-        """
-        Translates a relative position (piece, point of contact) into
-        a board cell (x, y).
-        """
-        refCell = self.locate(refPiece)
-        return self.get_dir_cell(refCell, pointOfContact)
 
 
     def get_dir_cell(self, cell, direction):
@@ -299,7 +281,7 @@ class HexBoard(Board):
             for j in range(firstCol, lastCol):
                 pieces = self.get((j, i))
                 if len(pieces) != 0:
-                    pieceName = str(pieces[-1])[:3]
+                    pieceName = pieces[-1][:3]
                 else:
                     pieceName = "   "
                 res += "|" + pieceName

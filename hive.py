@@ -12,9 +12,33 @@ class Hive(object):
         self.turn = 0
         self.players = ['w', 'b']
         self.board = HexBoard()
+        self.playedPieces = {}
 
 
-    def move_piece(self, piece, cell):
+    def poc2cell(self, refPiece, pointOfContact):
+        """
+        Translates a relative position (piece, point of contact) into
+        a board cell (x, y).
+        """
+        refCell = self.locate(refPiece)
+        return self.board.get_dir_cell(refCell, pointOfContact)
+
+
+    def locate(self, piece):
+        """
+        Returns the cell where the piece is positioned.
+        piece is a piece identifier (string)
+        """
+        res = None
+        try:
+            res = self.playedPieces[str(piece)]['cell']
+        except KeyError:
+            pass
+
+        return res
+
+
+    def move_piece(self, piece, refPiece, refDirection):
         """
         Verifies if a piece can be played from hand into a given cell.
         """
@@ -33,7 +57,8 @@ class Hive(object):
         raise NotImplemented
 
 
-    def validate_move_piece(self, moving_piece, ref_piece, ref_position):
+
+    def _validate_move_piece(self, moving_piece, cell):
         # - check if moving this piece won't break the hive
         #   - check if the piece is touching more then one piece
         #   - check that from one of the touching pieces you can reach all other
@@ -47,22 +72,27 @@ class Hive(object):
         raise NotImplemented
 
 
-    def validate_place_piece(self, piece, ref_piece, ref_direction):
+    def _validate_place_piece(self, piece, cell):
         """
         Verifies if a piece can be played from hand into a given cell.
         The piece must be placed touching at least one piece of the same color
         and can only be touching pieces of the same color.
         """
-        cell = self.board.poc2cell(ref_piece, ref_direction)
+        # if it's the second piece we put it without validating touching colors
+        if self.turn == 2:
+            self.board.place(cell, str(piece))
+            self.playedPieces[str(piece)] = {'piece': piece, 'cell': cell}
+            return True
+
         playedColor = piece.color
 
         occupiedCells = self._occupied_surroundings(cell)
-        visiblePiecesColor = [
-            self.board.get(oCell)[-1].color for oCell in occupiedCells
+        visiblePieces = [
+            self.board.get(oCell)[-1] for oCell in occupiedCells
         ]
         res = True
-        for c in visiblePiecesColor:
-            if c != playedColor:
+        for pName in visiblePieces:
+            if self.playedPieces[pName]['piece'].color != playedColor:
                 res = False
                 break
 
@@ -71,7 +101,7 @@ class Hive(object):
 
     def one_hive(self, piece):
         """Check if removing a piece doesn't break the one hive rule."""
-        originalPos = self.board.remove(piece)
+        originalPos = self.board.remove(str(piece))
         occupied = self._occupied_surroundings(originalPos)
         visited = set()
         toExplore = set([occupied[0]])
@@ -88,7 +118,7 @@ class Hive(object):
                 res = True
                 break
 
-        self.board.place(originalPos, piece)
+        self.board.place(originalPos, str(piece))
         return res
 
 
@@ -146,8 +176,8 @@ class Hive(object):
             else:
                 moveDir = 4  # e
 
-        # diagonal jump
-        if dy != 0:
+        # diagonal jump (dy != 0)
+        else:
             # must jump atleast over one piece
             if abs(dy) == 1:
                 return False
@@ -171,13 +201,12 @@ class Hive(object):
         # are all in-between cells occupied?
         cell = self.board.get_dir_cell(startingCell, moveDir)
         while cell != endCell:
-            pieces = self.board.get(cell)
-            if pieces == []:
+            if self.board.is_cell_free(cell):
                 return False
             cell = self.board.get_dir_cell(cell, moveDir)
 
         # is the endCell free?
-        if self.board.get(endCell) != []:
+        if not self.board.is_cell_free(endCell):
             return False
 
         return True
