@@ -79,10 +79,30 @@ class Board(object):
                 row.insert(0, [])
 
 
-    def place(self, (x, y), piece):
-        "Place a piece in the board position (x, y)"
-        xx = self.ref0x+x
-        yy = self.ref0y+y
+    def place(self, cell, piece):
+        """
+        Extends the board to contain the target cell and stores the piece in
+        that cell.
+        """
+        (xx, yy) = self.resize()
+        self.board[yy][xx].append(piece)
+        self.pieceIndex[piece] = (x, y)
+
+
+    def remove(self, piece):
+        cell = self.pieceIndex.pop(piece)
+        cellPieces = self.get(cell)
+        cellPieces.remove(piece)
+        return cell
+
+
+    def resize(self, (x, y)):
+        """
+        Resizes the board to include the position (x, y)
+        returns the normalized (x, y)
+        """
+        xx = self.ref0x + x
+        yy = self.ref0y + y
 
         while xx < 0:
             self._add_column(before=True)
@@ -94,16 +114,7 @@ class Board(object):
             yy += 1
         while yy >= len(self.board):
             self._add_row()
-
-        self.board[yy][xx].append(piece)
-        self.pieceIndex[piece] = (x, y)
-
-
-    def remove(self, piece):
-        cell = self.pieceIndex.pop(piece)
-        cellPieces = self.get(cell)
-        cellPieces.remove(piece)
-        return cell
+        return (xx, yy)
 
 
     def get(self, (x, y)):
@@ -179,8 +190,8 @@ class HexBoard(Board):
 
     def get_dir_cell(self, cell, direction):
         """
-        Translates a relative position (piece, point of contact) into
-        a board cell (x, y).
+        Translates a relative position (cell, direction) to the refered
+        cell (x, y).
 
         direction in [0, 1, 2, 3, 4, 5, 6] and translates to:
         0 => o (origin/on-top)
