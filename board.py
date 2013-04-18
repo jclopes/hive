@@ -84,9 +84,9 @@ class Board(object):
         Extends the board to contain the target cell and stores the piece in
         that cell.
         """
-        (xx, yy) = self.resize()
+        (xx, yy) = self.resize(cell)
         self.board[yy][xx].append(piece)
-        self.pieceIndex[piece] = (x, y)
+        self.pieceIndex[piece] = cell
 
 
     def remove(self, piece):
