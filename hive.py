@@ -59,11 +59,8 @@ class Hive(object):
 
     def place_piece(self, piece, refPieceName=None, refDirection=None):
         """
-        Verifies if a piece can be played from hand into a given cell.
+        Place a piece on the playing board.
         """
-        # the piece was already played
-        if str(piece) in self.playedPieces:
-            return False
 
         # if it's the first piece we put it at cell (0, 0)
         if refPieceName is None and self.turn == 1:
@@ -101,6 +98,11 @@ class Hive(object):
         The piece must be placed touching at least one piece of the same color
         and can only be touching pieces of the same color.
         """
+
+        # the piece was already played
+        if str(piece) in self.playedPieces:
+            return False
+
         # if it's the second piece we put it without validating touching colors
         if self.turn == 2:
             self.board.place(cell, str(piece))
