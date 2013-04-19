@@ -76,8 +76,9 @@ class HiveShellClient(object):
         actPlayer = (2 - (turn % 2))
         # if the piece is on the board
         # first remove the pice from it's current location
+        if refPiece is not None:
+            targetCell = self.ppoc2cell(pointOfContact, refPiece)
         startCell = self.hive.locate(actPiece)
-        targetCell = self.ppoc2cell(pointOfContact, refPiece)
         if startCell is None:
             p = self.player[actPlayer][actPiece]
             if not self.hive.place_piece(
@@ -85,6 +86,7 @@ class HiveShellClient(object):
             ):
                 return False
         else:
+            # TODO: change this to self.hive.move(actPiece, target)
             self.hive.board.remove(actPiece)
             self.hive.board.place(targetCell, actPiece)
         return True
