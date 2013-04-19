@@ -174,6 +174,16 @@ class Board(object):
 class HexBoard(Board):
     """Hexagonal Tile Board"""
 
+    # Directions
+    HX_O = 0   # origin/on-top
+    HX_W = 1   # west
+    HX_NW = 2  # north-west
+    HX_NE = 3  # north-east
+    HX_E = 4   # east
+    HX_SE = 5  # south-east
+    HX_SW = 6  # south-west
+
+
     def __init__(self):
         super(HexBoard, self).__init__()
 
@@ -184,10 +194,12 @@ class HexBoard(Board):
         from the left
         """
         res = super(HexBoard, self).get_surrounding((x, y))
+        # if in a even row we insert NW into posistion 1 and SW into position 5
         p = y % 2
         if p == 0:
             res.insert(1, (x-1, y-1))
             res.insert(5, (x-1, y+1))
+        # if in a odd row we insert NE into posistion 2 and SE into position 4
         else:
             res.insert(2, (x+1, y-1))
             res.insert(4, (x+1, y+1))

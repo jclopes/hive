@@ -8,6 +8,15 @@ class Hive(object):
     This class enforces the game rules and keeps the state of the game.
     """
 
+    # Directions
+    O = HexBoard.HX_O   # origin/on-top
+    W = HexBoard.HX_W   # west
+    NW = HexBoard.HX_NW  # north-west
+    NE = HexBoard.HX_NE  # north-east
+    E = HexBoard.HX_E   # east
+    SE = HexBoard.HX_SE  # south-east
+    SW = HexBoard.HX_SW  # south-west
+
     def __init__(self):
         self.turn = 0
         self.players = ['w', 'b']

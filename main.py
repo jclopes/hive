@@ -48,37 +48,27 @@ class HiveShellClient(object):
 
 
     def ppoc2cell(self, pointOfContact, refPiece):
-        if pointOfContact == '|*':
-            return self.hive.poc2cell(refPiece, 1)
-        if pointOfContact == '/*':
-            return self.hive.poc2cell(refPiece, 2)
-        if pointOfContact == '*\\':
-            return self.hive.poc2cell(refPiece, 3)
-        if pointOfContact == '*|':
-            return self.hive.poc2cell(refPiece, 4)
-        if pointOfContact == '*/':
-            return self.hive.poc2cell(refPiece, 5)
-        if pointOfContact == '\\*':
-            return self.hive.poc2cell(refPiece, 6)
-        if pointOfContact == '=*':
-            return self.hive.poc2cell(refPiece, 0)
+        direction = self.poc2direction(pointOfContact)
+        return self.hive.poc2cell(refPiece, direction)
 
 
     def poc2direction(self, pointOfContact):
+        "Parse point of contact to a Hive.direction"
         if pointOfContact == '|*':
-            return 1
+            return Hive.W
         if pointOfContact == '/*':
-            return 2
+            return Hive.NW
         if pointOfContact == '*\\':
-            return 3
+            return Hive.NE
         if pointOfContact == '*|':
-            return 4
+            return Hive.E
         if pointOfContact == '*/':
-            return 5
+            return Hive.SE
         if pointOfContact == '\\*':
-            return 6
+            return Hive.SW
         if pointOfContact == '=*':
-            return 0
+            return Hive.O
+        return None
 
 
     def exec_cmd(self, cmd, turn):
