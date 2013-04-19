@@ -22,8 +22,10 @@ class Hive(object):
         self.players = ['w', 'b']
         self.board = HexBoard()
         self.playedPieces = {}
+        self.piecesInCell = {}
 
 
+    # TODO: rename/remove this function. probably should not be exposed
     def poc2cell(self, refPiece, pointOfContact):
         """
         Translates a relative position (piece, point of contact) into
@@ -39,10 +41,9 @@ class Hive(object):
         piece is a piece identifier (string)
         """
         res = None
-        try:
-            res = self.playedPieces[str(piece)]['cell']
-        except KeyError:
-            pass
+        pp = self.playedPieces.get(str(piece))
+        if pp is not None:
+            res = pp['cell']
 
         return res
 
@@ -65,14 +66,18 @@ class Hive(object):
         # if it's the first piece we put it at cell (0, 0)
         if refPieceName is None and self.turn == 1:
             cell = (0, 0)
-            self.board.place(cell, str(piece))
+            self.board.resize(cell)
+            pic = self.piecesInCell.setdefault(cell, [])
+            pic.append(str(piece))
             self.playedPieces[str(piece)] = {'piece': piece, 'cell': cell}
             return cell
 
         # the placement is valid
         cell = self.poc2cell(refPieceName, refDirection)
         if self._validate_place_piece(piece, cell):
-            self.board.place(cell, str(piece))
+            self.board.resize(cell)
+            pic = self.piecesInCell.setdefault(cell, [])
+            pic.append(str(piece))
             self.playedPieces[str(piece)] = {'piece': piece, 'cell': cell}
 
         return cell
@@ -105,15 +110,19 @@ class Hive(object):
 
         # if it's the second piece we put it without validating touching colors
         if self.turn == 2:
-            self.board.place(cell, str(piece))
+            # TODO: factor out this code block
+            self.board.resize(cell)
+            pic = self.piecesInCell.setdefault(cell, [])
+            pic.append(str(piece))
             self.playedPieces[str(piece)] = {'piece': piece, 'cell': cell}
+
             return True
 
         playedColor = piece.color
 
         occupiedCells = self._occupied_surroundings(cell)
         visiblePieces = [
-            self.board.get(oCell)[-1] for oCell in occupiedCells
+            self.piecesInCell[oCell][-1] for oCell in occupiedCells
         ]
         res = True
         for pName in visiblePieces:
@@ -180,12 +189,12 @@ class Hive(object):
         for i in range(6):
             target =  surroundings[i-1]
             # is the target cell free?
-            if self.board.is_cell_free(target):
+            if self._is_cell_free(target):
                 # does it have an adjacent fee cell that is also adjacent to the
                 # starting cell?
                 if (
-                    self.board.is_cell_free(surroundings[i])
-                    or self.board.is_cell_free(surroundings[i-2])
+                    self._is_cell_free(surroundings[i])
+                    or self._is_cell_free(surroundings[i-2])
                 ):
                     # does it have an adjacent occupied cell other then the
                     # starting cell?
@@ -244,20 +253,27 @@ class Hive(object):
         # are all in-between cells occupied?
         cell = self.board.get_dir_cell(startingCell, moveDir)
         while cell != endCell:
-            if self.board.is_cell_free(cell):
+            if self._is_cell_free(cell):
                 return False
             cell = self.board.get_dir_cell(cell, moveDir)
 
         # is the endCell free?
-        if not self.board.is_cell_free(endCell):
+        if not self._is_cell_free(endCell):
             return False
 
         return True
 
 
+    def _is_cell_free(self, cell):
+        res = True
+        if cell in self.piecesInCell:
+            res = len(self.piecesInCell) == 0
+        return res
+
+
     def _occupied_surroundings(self, cell):
         surroundings = self.board.get_surrounding(cell)
-        return [c for c in surroundings if len(self.board.get(c)) > 0]
+        return [c for c in surroundings if not self._is_cell_free(c)]
 
 
     def __repr__(self):
