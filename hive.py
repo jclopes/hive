@@ -123,8 +123,25 @@ class Hive(object):
 
 
     def one_hive(self, piece):
-        """Check if removing a piece doesn't break the one hive rule."""
-        originalPos = self.board.remove(str(piece))
+        """
+        Check if removing a piece doesn't break the one hive rule.
+        Returns False if the hive is broken.
+        """
+        originalPos = self.locate(str(piece))
+        # if the piece is not in the board then moving it won't break the hive
+        if originalPos is None:
+            return True
+        # if there is another piece in the same cell then the one hive rule
+        # won't be broken
+        pic = self.piecesInCell[originalPos]
+        if len(pic) > 1:
+            return True
+
+        # remove the piece
+        del self.piecesInCell[originalPos]
+
+        # Get all pieces that are in contact with the removed one and try to
+        # reach all of them from one of them.
         occupied = self._occupied_surroundings(originalPos)
         visited = set()
         toExplore = set([occupied[0]])
@@ -141,7 +158,8 @@ class Hive(object):
                 res = True
                 break
 
-        self.board.place(originalPos, str(piece))
+        # restore the removed piece
+        self.piecesInCell[originalPos] = pic
         return res
 
 
