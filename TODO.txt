@@ -1,0 +1,8 @@
+TODO
+====
+
+- Rename Hive.poc2cell
+
+- Write tests for _validate_place_piece
+
+- Queen in the first 4 moves rule
