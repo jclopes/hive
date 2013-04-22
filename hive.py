@@ -84,22 +84,20 @@ class Hive(object):
 
         # if it's the first piece we put it at cell (0, 0)
         if refPieceName is None and self.turn == 1:
-            cell = (0, 0)
-            self.board.resize(cell)
-            pic = self.piecesInCell.setdefault(cell, [])
-            pic.append(str(piece))
-            self.playedPieces[str(piece)] = {'piece': piece, 'cell': cell}
-            return cell
+            targetCell = (0, 0)
+        else:
+            targetCell = self.poc2cell(refPieceName, refDirection)
 
         # the placement is valid
-        cell = self.poc2cell(refPieceName, refDirection)
-        if self._validate_place_piece(piece, cell):
-            self.board.resize(cell)
-            pic = self.piecesInCell.setdefault(cell, [])
-            pic.append(str(piece))
-            self.playedPieces[str(piece)] = {'piece': piece, 'cell': cell}
+        if not self._validate_place_piece(piece, targetCell):
+            raise HiveException("Invalid Piece Placement")
 
-        return cell
+        self.board.resize(targetCell)
+        pic = self.piecesInCell.setdefault(targetCell, [])
+        pic.append(str(piece))
+        self.playedPieces[str(piece)] = {'piece': piece, 'cell': targetCell}
+
+        return targetCell
 
 
     def _validate_move_piece(self, moving_piece, cell):
@@ -127,14 +125,13 @@ class Hive(object):
         if str(piece) in self.playedPieces:
             return False
 
-        # if it's the second piece we put it without validating touching colors
-        if self.turn == 2:
-            # TODO: factor out this code block
-            self.board.resize(cell)
-            pic = self.piecesInCell.setdefault(cell, [])
-            pic.append(str(piece))
-            self.playedPieces[str(piece)] = {'piece': piece, 'cell': cell}
+        # if it's the first turn we don't need to validate
+        if self.turn == 1:
+            # TODO: turnament rules don't allow playing Queen on first turn
+            return True
 
+        # if it's the second turn we put it without validating touching colors
+        if self.turn == 2:
             return True
 
         playedColor = piece.color
