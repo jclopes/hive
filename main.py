@@ -74,21 +74,23 @@ class HiveShellClient(object):
     def exec_cmd(self, cmd, turn):
         (actPiece, pointOfContact, refPiece) = self.parse_cmd(cmd)
         actPlayer = (2 - (turn % 2))
-        # if the piece is on the board
-        # first remove the pice from it's current location
-        if refPiece is not None:
-            targetCell = self.ppoc2cell(pointOfContact, refPiece)
-        startCell = self.hive.locate(actPiece)
-        if startCell is None:
-            p = self.player[actPlayer][actPiece]
-            if not self.hive.place_piece(
-                p, refPiece, self.poc2direction(pointOfContact)
-            ):
-                return False
+        p = self.player[actPlayer][actPiece]
+
+        direction = None
+        if pointOfContact is not None:
+            direction = self.poc2direction(pointOfContact)
+
+        # if the piece is not on the board
+        if self.hive.locate(actPiece) is None:
+            self.hive.place_piece(p, refPiece, direction)
         else:
-            # TODO: change this to self.hive.move(actPiece, target)
-            self.hive.board.remove(actPiece)
-            self.hive.board.place(targetCell, actPiece)
+            self.hive.move_piece(p, refPiece, direction)
+            self.hive.board.remove(actPiece)  # Hack to make pieces visible on the board
+
+        # Hack to make pieces visible on the board
+        c = self.hive.locate(actPiece)
+        self.hive.board.place(c, actPiece)
+
         return True
 
 
