@@ -19,17 +19,17 @@ Notation:
 
  - Piece:
     * A piece is represented by 3 chars.
-    * The first is the color and can be "black" or "white" {'b'|'w'}.
-    * The second is the piece name {'A'|'B'|'G'|'Q'|'S'}.
-    * The third is the piece number used to distinguish pieces of the same name {'1'|'2'|'3'}.
-    * ex: "wG2" - represents the second played grasshopper played by the whites.
+    * The first is the color and can be "black" or "white" {`b`|`w`}.
+    * The second is the piece name {`A`|`B`|`G`|`Q`|`S`}.
+    * The third is the piece number used to distinguish pieces of the same name {`1`|`2`|`3`}.
+    * ex: `wG2` - represents the second played grasshopper played by the whites.
 
  - Move:
     * A move is represented by 3 sections.
     * The first section is the notation of the moving piece.
     * The second is the point of contact with the piece where the move stops.
     * The third is the notation of the piece refered by the contact point.
-    * ex: "wG2/*bA1" - the second white grasshopper is positioned touching the first black ant on its left-upper side.
+    * ex: `wG2/*bA1` - the second white grasshopper is positioned touching the first black ant on its left-upper side.
 
  - Point Of Contact:
     * `/*` - moving piece is place touching the target piece at its upper-left face
