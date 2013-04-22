@@ -90,15 +90,9 @@ class Board(object):
 
 
     def remove(self, piece):
-        (x, y) = self.pieceIndex.pop(piece)
-
-        cellPieces = self.get((x, y))
+        cell = self.pieceIndex.pop(piece)
+        cellPieces = self.get(cell)
         cellPieces.remove(piece)
-
-        xx = self.ref0x + x
-        yy = self.ref0y + y
-        self.board[yy][xx].remove(piece)
-
         return cell
 
 
