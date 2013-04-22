@@ -47,4 +47,4 @@ Board:
 -----
 
 The board is a virtual concept since there is no board in the original board game.
-The first player played piece is positioned at the cell 0,0 and the seccond player places its first piece at the cell 0,1 touching the first piece on its right side ("*|").
+The first player played piece is positioned at the cell (0, 0).
