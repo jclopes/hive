@@ -2,6 +2,10 @@ from board import HexBoard
 from piece import HivePiece
 
 
+class HiveException(Exception):
+    """Base class for exceptions."""
+    pass
+
 class Hive(object):
     """
     The Hive Game.
@@ -52,10 +56,25 @@ class Hive(object):
         """
         Verifies if a piece can be played from hand into a given cell.
         """
-        # the piece is on the board
-        # the piece can be moved
         # the move is valid
-        raise NotImplemented
+
+        pieceName = str(piece)
+        targetCell = self.poc2cell(refPiece, refDirection)
+        # TODO: check if the piece was played
+        # TODO: check if it's the top piece
+        if not self._validate_move_piece(piece, targetCell):
+            raise HiveException("Invalid Piece Movement")
+
+        pp = self.playedPieces[pieceName]
+        # remove the piece from its current location
+        self.piecesInCell[pp['cell']].remove(pieceName)
+        # places the piece at the target location
+        self.board.resize(targetCell)
+        pp['cell'] = targetCell
+        pic = self.piecesInCell.setdefault(pp['cell'], [])
+        pic.append(piece)
+
+        return pp['cell']
 
 
     def place_piece(self, piece, refPieceName=None, refDirection=None):
@@ -94,7 +113,7 @@ class Hive(object):
         #   - check if the end position is free unless is a move on top
         #   - if the move is not a jump
         #     - check that the end position is in the periphery of the board
-        raise NotImplemented
+        return True
 
 
     def _validate_place_piece(self, piece, cell):
