@@ -82,7 +82,7 @@ class Hive(object):
         self.board.resize(targetCell)
         pp['cell'] = targetCell
         pic = self.piecesInCell.setdefault(pp['cell'], [])
-        pic.append(piece)
+        pic.append(str(piece))
 
         return pp['cell']
 

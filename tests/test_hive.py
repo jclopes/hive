@@ -93,3 +93,16 @@ class TestHive(TestCase):
         self.assertFalse(
             self.hive._validate_place_piece(bQ1, cell)
         )
+
+
+    def test_move_piece(self):
+        wB1 = self.hive.playedPieces.get('wB1')['piece']
+        wS1 = self.hive.playedPieces.get('wS1')['piece']
+        cell = self.hive.locate(wS1)
+        self.hive.move_piece(wB1, 'wS1', 0)
+        pieces = self.hive.get_pieces(cell)
+
+        self.assertEquals(cell, self.hive.locate(wB1))
+        self.assertEquals(2, len(pieces))
+        self.assertTrue(str(wB1) in pieces)
+        self.assertTrue(str(wS1) in pieces)
