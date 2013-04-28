@@ -180,6 +180,15 @@ class HexBoard(Board):
 
     def __init__(self):
         super(HexBoard, self).__init__()
+        self.dir2func = {
+            0: lambda x: x,
+            1: self.get_w_xy,
+            2: self.get_nw_xy,
+            3: self.get_ne_xy,
+            4: self.get_e_xy,
+            5: self.get_se_xy,
+            6: self.get_sw_xy
+        }
 
 
     def get_surrounding(self, (x, y)):
@@ -214,16 +223,7 @@ class HexBoard(Board):
         5 => se (south-east)
         6 => sw (south-west)
         """
-        dir2func = {
-            0: lambda x: x,
-            1: self.get_w_xy,
-            2: self.get_nw_xy,
-            3: self.get_ne_xy,
-            4: self.get_e_xy,
-            5: self.get_se_xy,
-            6: self.get_sw_xy
-        }
-        return dir2func[direction](cell)
+        return self.dir2func[direction](cell)
 
 
     def get_nw_xy(self, (x, y)):
