@@ -280,12 +280,18 @@ class HexBoard(Board):
         return (x+1, y)
 
 
-    def __repr__(self):
-        res = "\n"
+    def get_board_limits(self):
+        """returns the coordinates of the board limits."""
         firstCol = -self.ref0x
         firstRow = -self.ref0y
         lastCol = len(self.board[0]) + firstCol
         lastRow = len(self.board) + firstRow
+        return firstCol, firstRow, lastCol, lastRow
+
+
+    def __repr__(self):
+        res = "\n"
+        firstCol, firstRow, lastCol, lastRow = self.get_board_limits()
         for i in range(firstRow, lastRow):
             p = i % 2
             # Top of the cells is also the bottom of the cells

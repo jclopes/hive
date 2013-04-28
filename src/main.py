@@ -5,6 +5,8 @@ import sys
 from board import HexBoard
 from hive import Hive
 from piece import HivePiece
+from view import HiveView
+
 
 class HiveShellClient(object):
     """HiveShellClient is a command line client to the Hive game."""
@@ -12,6 +14,7 @@ class HiveShellClient(object):
     def __init__(self):
         super(HiveShellClient, self).__init__()
         self.hive = Hive()
+        self.view = HiveView(self.hive)
         self.input = sys.stdin
         self.player = {1: None, 2: None}
 
@@ -99,7 +102,7 @@ class HiveShellClient(object):
         self.player[2] = self.piece_set('b')
         self.hive.turn += 1
         while True:
-            print self.hive
+            print self.view
             print "player %s play: " % (2 - (self.hive.turn % 2)),
             try:
                 cmd = self.input.readline()

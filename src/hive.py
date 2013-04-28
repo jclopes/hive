@@ -29,6 +29,16 @@ class Hive(object):
         self.piecesInCell = {}
 
 
+    def get_board_limits(self):
+        """returns the coordinates of the board limits."""
+        return self.board.get_board_limits()
+
+
+    def get_pieces(self, cell):
+        """return the pieces that are in the cell (x, y)."""
+        return self.piecesInCell.get(cell, [])
+
+
     # TODO: rename/remove this function. probably should not be exposed
     def poc2cell(self, refPiece, pointOfContact):
         """
