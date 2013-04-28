@@ -32,8 +32,13 @@ class TestBoard(TestCase):
         self.board = Board()
 
 
-    def test_get(self):
-        self.board.place((-1, -1), "p1")
-        self.board.place((-1, 1), "p2")
-        self.board.get((-1,-2))
-        self.assertEqual([], self.board.get((-1,-2)))
+    def test_get_boundaries(self):
+        self.assertEqual((0, 0, 0, 0), self.board.get_boundaries())
+
+
+    def test_resize(self):
+        self.board.resize((-2, 2))
+        self.board.resize((3, -3))
+        self.assertEqual((-2, -3, 3, 2), self.board.get_boundaries())
+        self.board.resize((1, -1))
+        self.assertEqual((-2, -3, 3, 2), self.board.get_boundaries())

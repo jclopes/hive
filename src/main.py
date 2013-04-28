@@ -88,11 +88,6 @@ class HiveShellClient(object):
             self.hive.place_piece(p, refPiece, direction)
         else:
             self.hive.move_piece(p, refPiece, direction)
-            self.hive.board.remove(actPiece)  # Hack to make pieces visible on the board
-
-        # Hack to make pieces visible on the board
-        c = self.hive.locate(actPiece)
-        self.hive.board.place(c, actPiece)
 
         return True
 

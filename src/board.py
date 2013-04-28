@@ -40,7 +40,6 @@
 # 7 => o (origin/on-top)
 
 # A 'cell' is a coordinate representation of a board position (x, y)
-# A 'piece' is an unique identifier of a playing piece (string)
 
 
 class Board(object):
@@ -99,30 +98,13 @@ class Board(object):
         return (xx, yy)
 
 
-    def get(self, (x, y)):
-        """
-        Returns pieces contained in the cell (x,y) in the same order as they
-        were placed into the cell.
-        """
-
-        xx = self.ref0x + x
-        yy = self.ref0y + y
-
-        if xx < 0 or yy < 0:
-            return []
-
-        res = []
-        try:
-            res = self.board[yy][xx]
-        except IndexError, e:
-            # TODO: add logging
-            pass
-
-        return res
-
-
-    def is_cell_free(self, cell):
-        return self.get(cell) == []
+    def get_boundaries(self):
+        """returns the coordinates of the board limits."""
+        firstCol = -self.ref0x
+        firstRow = -self.ref0y
+        lastCol = len(self.board[0]) + firstCol - 1
+        lastRow = len(self.board) + firstRow - 1
+        return firstCol, firstRow, lastCol, lastRow
 
 
     def get_surrounding(self, (x, y)):
@@ -260,42 +242,3 @@ class HexBoard(Board):
         Get X;Y coordinates for the right Cell
         """
         return (x+1, y)
-
-
-    def get_board_limits(self):
-        """returns the coordinates of the board limits."""
-        firstCol = -self.ref0x
-        firstRow = -self.ref0y
-        lastCol = len(self.board[0]) + firstCol
-        lastRow = len(self.board) + firstRow
-        return firstCol, firstRow, lastCol, lastRow
-
-
-    def __repr__(self):
-        res = "\n"
-        firstCol, firstRow, lastCol, lastRow = self.get_board_limits()
-        for i in range(firstRow, lastRow):
-            p = i % 2
-            # Top of the cells is also the bottom of the cells
-            # for the previous row.
-            if i > firstRow:
-                res += " \\" * p
-            else:
-                res += "  " * p
-            for j in range(firstCol, lastCol):
-                res += " / \\"
-            if i > firstRow and p == 0:
-                res += " /"
-            res += "\n"
-            # Center of the cells
-            res += "  " * p
-            for j in range(firstCol, lastCol):
-                res += "|" + "   "
-            res += "|\n"
-        p = (lastRow - 1) % 2
-        res += "  " * p
-        for j in range(firstCol, lastCol):
-            res += " \\ /"
-        res += "\n"
-
-        return res

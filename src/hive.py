@@ -29,9 +29,9 @@ class Hive(object):
         self.piecesInCell = {}
 
 
-    def get_board_limits(self):
+    def get_board_boundaries(self):
         """returns the coordinates of the board limits."""
-        return self.board.get_board_limits()
+        return self.board.get_boundaries()
 
 
     def get_pieces(self, cell):
