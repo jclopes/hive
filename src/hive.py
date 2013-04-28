@@ -203,7 +203,7 @@ class Hive(object):
         available_moves = []
         surroundings = self.board.get_surrounding(cell)
         for i in range(6):
-            target =  surroundings[i-1]
+            target = surroundings[i-1]
             # is the target cell free?
             if self._is_cell_free(target):
                 # does it have an adjacent fee cell that is also adjacent to the

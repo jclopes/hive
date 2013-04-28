@@ -7,7 +7,7 @@ from hive import Hive
 from piece import HivePiece
 
 class HiveShellClient(object):
-    """docstring for HiveShellClient"""
+    """HiveShellClient is a command line client to the Hive game."""
 
     def __init__(self):
         super(HiveShellClient, self).__init__()
