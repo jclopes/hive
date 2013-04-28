@@ -54,7 +54,6 @@ class Board(object):
         self.board = [[[]]]
         self.ref0x = 0
         self.ref0y = 0
-        self.pieceIndex = {}
 
 
     def _add_row(self, before=False):
@@ -77,23 +76,6 @@ class Board(object):
                 row.append([])
             else:
                 row.insert(0, [])
-
-
-    def place(self, cell, piece):
-        """
-        Extends the board to contain the target cell and stores the piece in
-        that cell.
-        """
-        (xx, yy) = self.resize(cell)
-        self.board[yy][xx].append(piece)
-        self.pieceIndex[piece] = cell
-
-
-    def remove(self, piece):
-        cell = self.pieceIndex.pop(piece)
-        cellPieces = self.get(cell)
-        cellPieces.remove(piece)
-        return cell
 
 
     def resize(self, (x, y)):
@@ -308,12 +290,7 @@ class HexBoard(Board):
             # Center of the cells
             res += "  " * p
             for j in range(firstCol, lastCol):
-                pieces = self.get((j, i))
-                if len(pieces) != 0:
-                    pieceName = pieces[-1][:3]
-                else:
-                    pieceName = "   "
-                res += "|" + pieceName
+                res += "|" + "   "
             res += "|\n"
         p = (lastRow - 1) % 2
         res += "  " * p

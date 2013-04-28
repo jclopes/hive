@@ -121,37 +121,6 @@ def main():
     game = HiveShellClient()
     game.run()
 
-    board = HexBoard()
-    board.place((0, 0), "wS1")
-    print board
-    time.sleep(1)
-    board.place((1, 0), "bS1")
-    print board
-    time.sleep(1)
-    (x, y) = board.get_sw_xy((0, 0))
-    board.place((x, y), "wQ1")
-    print board
-    time.sleep(1)
-    (x, y) = board.get_se_xy((1, 0))
-    board.place((x, y), "bA1")
-    print board
-    time.sleep(1)
-    (x, y) = board.get_nw_xy((0, 0))
-    board.place((x, y), "wS2")
-    print board
-    time.sleep(1)
-    (x, y) = board.get_e_xy((1, 0))
-    board.place((x, y), "bG1")
-    print board
-    time.sleep(1)
-    board.remove("bG1")
-    print board
-    time.sleep(1)
-    (x, y) = board.get_ne_xy((1, 0))
-    board.place((x, y), "bG1")
-    print board
-    time.sleep(1)
-
 
 if __name__ == '__main__':
     sys.exit(main())
