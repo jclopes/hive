@@ -242,3 +242,50 @@ class HexBoard(Board):
         Get X;Y coordinates for the right Cell
         """
         return (x+1, y)
+
+
+    def get_line_dir(self, cell0, cell1):
+        """
+        Returns the direction to take to go from cell0 to cell1 or None if it's
+        not possible to go in a straight line.
+        """
+
+        (sx, sy) = cell0
+        (ex, ey) = cell1
+        dx = ex - sx
+        dy = ey - sy
+        p = sy % 2  # starting from an even or odd line?
+
+        # is the same cell
+        if dx == dy == 0:
+            return self.HX_O
+
+        moveDir = None
+        # horizontal jump
+        if dy == 0:
+            # moving west
+            if dx < 0:
+                moveDir = self.HX_W
+            # moving east
+            else:
+                moveDir = self.HX_E
+
+        # diagonal jump (dy != 0)
+        else:
+            # must move in a diagonal with slope = 2
+            nx = (abs(dy) + (1 - p)) / 2
+            if abs(dx) != abs(nx):
+                return None
+
+            if dx < 0:
+                if dy < 0:
+                    moveDir = self.HX_NW
+                else:
+                    moveDir = self.HX_SW
+            else:
+                if dy < 0:
+                    moveDir = self.HX_NE
+                else:
+                    moveDir = self.HX_SE
+
+        return moveDir

@@ -39,16 +39,6 @@ class Hive(object):
         return self.piecesInCell.get(cell, [])
 
 
-    # TODO: rename/remove this function. probably should not be exposed
-    def poc2cell(self, refPiece, pointOfContact):
-        """
-        Translates a relative position (piece, point of contact) into
-        a board cell (x, y).
-        """
-        refCell = self.locate(refPiece)
-        return self.board.get_dir_cell(refCell, pointOfContact)
-
-
     def locate(self, piece):
         """
         Returns the cell where the piece is positioned.
@@ -230,7 +220,7 @@ class Hive(object):
         return available_moves
 
 
-    def valid_grasshopper_move(self, startingCell, endCell):
+    def _valid_grasshopper_move(self, startingCell, endCell):
         # TODO: add function to HexBoard that find cells in a straight line
 
         # is the move in only one direction?
@@ -240,41 +230,21 @@ class Hive(object):
         dy = ey - sy
         p = sy % 2  # starting from an even or odd line?
 
-        moveDir = None
         # horizontal jump
         if dy == 0:
             # must jump atleast over one piece
             if abs(dx) <= 1:
                 return False
-
-            # moving west
-            if dx < 0:
-                moveDir = 1  # w
-            # moving east
-            else:
-                moveDir = 4  # e
-
         # diagonal jump (dy != 0)
         else:
             # must jump atleast over one piece
-            if abs(dy) == 1:
+            if abs(dy) <= 1:
                 return False
 
-            # must move in a diagonal with slope = 2
-            nx = (dy + p) / 2
-            if abs(dx) != abs(nx):
-                return False
-
-            if dx < 0:
-                if dy < 0:
-                    moveDir = 2  # nw
-                else:
-                    moveDir = 6  # sw
-            else:
-                if dy < 0:
-                    moveDir = 3  # ne
-                else:
-                    moveDir = 5  # se
+        moveDir = self.board.get_line_dir(startingCell, endCell)
+        # must muve in a straigh line
+        if moveDir is None or moveDir == 0:
+            return False
 
         # are all in-between cells occupied?
         cell = self.board.get_dir_cell(startingCell, moveDir)
@@ -300,6 +270,16 @@ class Hive(object):
     def _occupied_surroundings(self, cell):
         surroundings = self.board.get_surrounding(cell)
         return [c for c in surroundings if not self._is_cell_free(c)]
+
+
+    # TODO: rename/remove this function. probably should not be exposed
+    def _poc2cell(self, refPiece, pointOfContact):
+        """
+        Translates a relative position (piece, point of contact) into
+        a board cell (x, y).
+        """
+        refCell = self.locate(refPiece)
+        return self.board.get_dir_cell(refCell, pointOfContact)
 
 
     def __repr__(self):
