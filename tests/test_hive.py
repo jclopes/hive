@@ -125,25 +125,35 @@ class TestHive(TestCase):
 
     def test_validate_place_piece(self):
         wA1 = HivePiece('w', 'A', 1)
-        bQ1 = HivePiece('b', 'Q', 1)
+        bB2 = HivePiece('b', 'B', 2)
 
-        cell = self.hive.poc2cell(self.piece['wS1'], 1)
-        self.assertTrue(
+        # place over another piece
+        cell = self.hive._poc2cell(self.piece['wS1'], self.hive.SW)
+        self.assertFalse(
             self.hive._validate_place_piece(wA1, cell)
         )
+
+        # valid placement
+        cell = self.hive._poc2cell(self.piece['bG1'], self.hive.E)
+        self.assertTrue(
+            self.hive._validate_place_piece(bB2, cell)
+        )
+
+        # wrong color
+        cell = self.hive._poc2cell(self.piece['wQ1'], self.hive.E)
         self.assertFalse(
-            self.hive._validate_place_piece(bQ1, cell)
+            self.hive._validate_place_piece(wA1, cell)
         )
 
 
     def test_move_piece(self):
-        wB1 = self.hive.playedPieces.get('wB1')['piece']
-        wS1 = self.hive.playedPieces.get('wS1')['piece']
-        cell = self.hive.locate(wS1)
-        self.hive.move_piece(wB1, 'wS1', 0)
+        bB1 = self.piece['bB1']
+        bS1 = self.piece['bS1']
+        cell = self.hive.locate(bS1)
+        self.hive.move_piece(bB1, 'bS1', 0)
         pieces = self.hive.get_pieces(cell)
 
-        self.assertEquals(cell, self.hive.locate(wB1))
+        self.assertEquals(cell, self.hive.locate(bB1))
         self.assertEquals(2, len(pieces))
-        self.assertTrue(str(wB1) in pieces)
-        self.assertTrue(str(wS1) in pieces)
+        self.assertTrue(str(bB1) in pieces)
+        self.assertTrue(str(bS1) in pieces)
