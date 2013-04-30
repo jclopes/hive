@@ -57,24 +57,22 @@ class Hive(object):
         Verifies if a piece can be played from hand into a given cell.
         """
         # the move is valid
-
         pieceName = str(piece)
-        targetCell = self.poc2cell(refPiece, refDirection)
-        # TODO: check if the piece was played
-        # TODO: check if it's the top piece
+        targetCell = self._poc2cell(refPiece, refDirection)
         if not self._validate_move_piece(piece, targetCell):
             raise HiveException("Invalid Piece Movement")
 
         pp = self.playedPieces[pieceName]
+        startingCell = pp['cell']
         # remove the piece from its current location
-        self.piecesInCell[pp['cell']].remove(pieceName)
+        self.piecesInCell[startingCell].remove(pieceName)
         # places the piece at the target location
         self.board.resize(targetCell)
         pp['cell'] = targetCell
-        pic = self.piecesInCell.setdefault(pp['cell'], [])
+        pic = self.piecesInCell.setdefault(targetCell, [])
         pic.append(str(piece))
 
-        return pp['cell']
+        return targetCell
 
 
     def place_piece(self, piece, refPieceName=None, refDirection=None):
@@ -86,26 +84,47 @@ class Hive(object):
         if refPieceName is None and self.turn == 1:
             targetCell = (0, 0)
         else:
-            targetCell = self.poc2cell(refPieceName, refDirection)
+            targetCell = self._poc2cell(refPieceName, refDirection)
 
         # the placement is valid
         if not self._validate_place_piece(piece, targetCell):
             raise HiveException("Invalid Piece Placement")
 
+        # places the piece at the target location
         self.board.resize(targetCell)
+        self.playedPieces[str(piece)] = {'piece': piece, 'cell': targetCell}
         pic = self.piecesInCell.setdefault(targetCell, [])
         pic.append(str(piece))
-        self.playedPieces[str(piece)] = {'piece': piece, 'cell': targetCell}
 
         return targetCell
 
 
-    def _validate_move_piece(self, moving_piece, cell):
-        # - check if moving this piece won't break the hive
-        #   - check if the piece is touching more then one piece
-        #   - check that from one of the touching pieces you can reach all other
-        #     pieces that where touching the moving piece
+    def _validate_move_piece(self, moving_piece, targetCell):
+        # check if the piece has been placed
+        pp = self.playedPieces.get(str(moving_piece))
+        if pp is None:
+            print "piece was not played yet"
+            return False
 
+        # check if the move it's to a different targetCell
+        if str(moving_piece) in self.piecesInCell.get(targetCell, []):
+            print "moving to the same place"
+            return False
+
+        # check if moving this piece won't break the hive
+        if not self._one_hive(moving_piece):
+            print "break _one_hive rule"
+            return False
+
+        validate_fun_map = {
+            'A': self._valid_ant_move,
+            'B': self._valid_beetle_move,
+            'G': self._valid_grasshopper_move,
+            'Q': self._valid_queen_move,
+            'S': self._valid_spider_move
+        }
+
+        validate_fun_map[moving_piece.kind](pp['cell'], targetCell)
 
         # - check that end position is accessible
         #   - check if the end position is free unless is a move on top
@@ -114,12 +133,16 @@ class Hive(object):
         return True
 
 
-    def _validate_place_piece(self, piece, cell):
+    def _validate_place_piece(self, piece, targetCell):
         """
-        Verifies if a piece can be played from hand into a given cell.
+        Verifies if a piece can be played from hand into a given targetCell.
         The piece must be placed touching at least one piece of the same color
         and can only be touching pieces of the same color.
         """
+
+        # targetCell must be free
+        if not self._is_cell_free(targetCell):
+            return False
 
         # the piece was already played
         if str(piece) in self.playedPieces:
@@ -136,7 +159,7 @@ class Hive(object):
 
         playedColor = piece.color
 
-        occupiedCells = self._occupied_surroundings(cell)
+        occupiedCells = self._occupied_surroundings(targetCell)
         visiblePieces = [
             self.piecesInCell[oCell][-1] for oCell in occupiedCells
         ]
@@ -149,7 +172,7 @@ class Hive(object):
         return res
 
 
-    def one_hive(self, piece):
+    def _one_hive(self, piece):
         """
         Check if removing a piece doesn't break the one hive rule.
         Returns False if the hive is broken.
@@ -190,7 +213,7 @@ class Hive(object):
         return res
 
 
-    def bee_moves(self, cell):
+    def _bee_moves(self, cell):
         """
         Get possible bee_moves from cell.
 
@@ -214,10 +237,65 @@ class Hive(object):
                 ):
                     # does it have an adjacent occupied cell other then the
                     # starting cell?
-                    if len(self._occupied_surroundings(target)) > 1:
+                    tOSurroundings = self._occupied_surroundings(target)
+                    if cell in tOSurroundings:
+                        tOSurroundings.remove(cell)
+                    if len(tOSurroundings) > 0:
                         available_moves.append(surroundings[i-1])
 
         return available_moves
+
+
+    def _valid_ant_move(self, startingCell, endCell):
+        toExplore = set([startingCell])
+        visited = set([startingCell])
+        res = False
+
+        while len(toExplore) > 0:
+            found = set()
+            for c in toExplore:
+                found.update(self._bee_moves(c))
+            found.difference_update(visited)
+            # have we found the endCell?
+            if endCell in found:
+                res = True
+                break
+
+            visited.update(found)
+            toExplore = found
+
+        return res
+
+
+    def _valid_queen_move(self, startingCell, endCell):
+        return endCell in self._bee_moves(startingCell)
+
+
+    def _valid_spider_move(self, startingCell, endCell):
+        visited = set()
+        firstStep = set()
+        secondStep = set()
+        thirdStep = set()
+
+        visited.add(startingCell)
+
+        firstStep.update(set(self._bee_moves(startingCell)))
+        visited.update(firstStep)
+
+        for c in firstStep:
+            secondStep.update(set(self._bee_moves(c)))
+        secondStep.difference_update(visited)
+        visited.update(secondStep)
+
+        for c in secondStep:
+            thirdStep.update(set(self._bee_moves(c)))
+        thirdStep.difference_update(visited)
+
+        return endCell in thirdStep
+
+
+    def _valid_beetle_move(self, startingCell, endCell):
+        return True
 
 
     def _valid_grasshopper_move(self, startingCell, endCell):
