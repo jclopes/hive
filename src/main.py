@@ -3,7 +3,7 @@
 import time
 import sys
 from board import HexBoard
-from hive import Hive
+from hive import Hive, HiveException
 from piece import HivePiece
 from view import HiveView
 
@@ -17,6 +17,7 @@ class HiveShellClient(object):
         self.view = HiveView(self.hive)
         self.input = sys.stdin
         self.player = {1: None, 2: None}
+        self.logger = None
 
 
     def piece_set(self, color):
@@ -39,6 +40,8 @@ class HiveShellClient(object):
         return pieceSet
 
     def parse_cmd(self, cmd):
+        self.logger.write(cmd+'\n')
+
         if len(cmd) == 3:
             movingPiece = cmd
             pointOfContact = None
@@ -77,7 +80,10 @@ class HiveShellClient(object):
     def exec_cmd(self, cmd, turn):
         (actPiece, pointOfContact, refPiece) = self.parse_cmd(cmd)
         actPlayer = (2 - (turn % 2))
-        p = self.player[actPlayer][actPiece]
+        try:
+            p = self.player[actPlayer][actPiece]
+        except Exception, e:
+            return False
 
         direction = None
         if pointOfContact is not None:
@@ -85,14 +91,21 @@ class HiveShellClient(object):
 
         # if the piece is not on the board
         if self.hive.locate(actPiece) is None:
-            self.hive.place_piece(p, refPiece, direction)
+            try:
+                self.hive.place_piece(p, refPiece, direction)
+            except HiveException, e:
+                return False
         else:
-            self.hive.move_piece(p, refPiece, direction)
+            try:
+                self.hive.move_piece(p, refPiece, direction)
+            except HiveException, e:
+                return False
 
         return True
 
 
     def run(self):
+        self.logger = open('game.log', 'w')
         self.player[1] = self.piece_set('w')
         self.player[2] = self.piece_set('b')
         self.hive.turn += 1
