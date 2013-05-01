@@ -76,12 +76,12 @@ class TestHive(TestCase):
         startCell = self.hive.locate('bA1')
         endCell = self.hive._poc2cell('wS1', self.hive.W)
         self.assertFalse(
-            self.hive._valid_ant_move(startCell, endCell)
+            self.hive._valid_ant_move(self.piece['bA1'], startCell, endCell)
         )
 
         endCell = (-2, 2)
         self.assertFalse(
-            self.hive._valid_ant_move(startCell, endCell)
+            self.hive._valid_ant_move(self.piece['bA1'], startCell, endCell)
         )
 
         # TODO: FIXME: This test should return False!
@@ -90,22 +90,22 @@ class TestHive(TestCase):
         # still ocuppied.
         endCell = self.hive._poc2cell('bA1', self.hive.SW)
         self.assertFalse(
-            self.hive._valid_ant_move(startCell, endCell)
+            self.hive._valid_ant_move(self.piece['bA1'], startCell, endCell)
         )
 
         endCell = self.hive._poc2cell('bS1', self.hive.SW)
         self.assertTrue(
-            self.hive._valid_ant_move(startCell, endCell)
+            self.hive._valid_ant_move(self.piece['bA1'], startCell, endCell)
         )
 
         endCell = self.hive._poc2cell('wS1', self.hive.NE)
         self.assertTrue(
-            self.hive._valid_ant_move(startCell, endCell)
+            self.hive._valid_ant_move(self.piece['bA1'], startCell, endCell)
         )
 
         endCell = self.hive._poc2cell('wQ1', self.hive.W)
         self.assertTrue(
-            self.hive._valid_ant_move(startCell, endCell)
+            self.hive._valid_ant_move(self.piece['bA1'], startCell, endCell)
         )
 
 
@@ -140,26 +140,28 @@ class TestHive(TestCase):
 
 
     def test_grasshopper_moves(self):
+        grasshopper = self.piece['bG1']
         startCell = self.hive.locate('bG1')
         endCell = self.hive._poc2cell('wS1', self.hive.W)
         self.assertTrue(
-            self.hive._valid_grasshopper_move(startCell, endCell)
+            self.hive._valid_grasshopper_move(grasshopper, startCell, endCell)
         )
 
         endCell = self.hive._poc2cell('bA1', self.hive.SW)
         self.assertTrue(
-            self.hive._valid_grasshopper_move(startCell, endCell)
+            self.hive._valid_grasshopper_move(grasshopper, startCell, endCell)
         )
 
         endCell = self.hive._poc2cell('wG1', self.hive.W)
         self.assertFalse(
-            self.hive._valid_grasshopper_move(startCell, endCell)
+            self.hive._valid_grasshopper_move(grasshopper, startCell, endCell)
         )
 
+        grasshopper = self.piece['wG1']
         startCell = self.hive.locate('wG1')
         endCell = self.hive._poc2cell('wB1', self.hive.NE)
         self.assertTrue(
-            self.hive._valid_grasshopper_move(startCell, endCell)
+            self.hive._valid_grasshopper_move(grasshopper, startCell, endCell)
         )
 
 
@@ -187,13 +189,13 @@ class TestHive(TestCase):
 
 
     def test_move_piece(self):
+        # move beetle over spider
         bB1 = self.piece['bB1']
-        bS1 = self.piece['bS1']
         cell = self.hive.locate('bS1')
         self.hive.move_piece(bB1, 'bS1', 0)
         pieces = self.hive.get_pieces(cell)
 
         self.assertEquals(cell, self.hive.locate('bB1'))
         self.assertEquals(2, len(pieces))
-        self.assertTrue(str(bB1) in pieces)
-        self.assertTrue(str(bS1) in pieces)
+        self.assertTrue('bB1' in pieces)
+        self.assertTrue('bS1' in pieces)

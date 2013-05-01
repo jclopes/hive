@@ -124,7 +124,7 @@ class Hive(object):
             'S': self._valid_spider_move
         }
 
-        validate_fun_map[moving_piece.kind](pp['cell'], targetCell)
+        validate_fun_map[moving_piece.kind](pp['piece'], pp['cell'], targetCell)
 
         # - check that end position is accessible
         #   - check if the end position is free unless is a move on top
@@ -172,45 +172,26 @@ class Hive(object):
         return res
 
 
-    def _one_hive(self, piece):
-        """
-        Check if removing a piece doesn't break the one hive rule.
-        Returns False if the hive is broken.
-        """
-        originalPos = self.locate(str(piece))
-        # if the piece is not in the board then moving it won't break the hive
-        if originalPos is None:
-            return True
-        # if there is another piece in the same cell then the one hive rule
-        # won't be broken
-        pic = self.piecesInCell[originalPos]
-        if len(pic) > 1:
-            return True
-
-        # remove the piece
-        del self.piecesInCell[originalPos]
-
-        # Get all pieces that are in contact with the removed one and try to
-        # reach all of them from one of them.
-        occupied = self._occupied_surroundings(originalPos)
-        visited = set()
-        toExplore = set([occupied[0]])
-        toReach = set(occupied[1:])
-        res = False
-
-        while len(toExplore) > 0:
-            found = []
-            for cell in toExplore:
-                found += self._occupied_surroundings(cell)
-                visited.add(cell)
-            toExplore = set(found) - visited
-            if toReach.issubset(visited):
-                res = True
-                break
-
-        # restore the removed piece
-        self.piecesInCell[originalPos] = pic
+    def _is_cell_free(self, cell):
+        res = True
+        if cell in self.piecesInCell:
+            res = len(self.piecesInCell) == 0
         return res
+
+
+    def _occupied_surroundings(self, cell):
+        surroundings = self.board.get_surrounding(cell)
+        return [c for c in surroundings if not self._is_cell_free(c)]
+
+
+    # TODO: rename/remove this function. probably should not be exposed
+    def _poc2cell(self, refPiece, pointOfContact):
+        """
+        Translates a relative position (piece, point of contact) into
+        a board cell (x, y).
+        """
+        refCell = self.locate(refPiece)
+        return self.board.get_dir_cell(refCell, pointOfContact)
 
 
     def _bee_moves(self, cell):
@@ -246,9 +227,63 @@ class Hive(object):
         return available_moves
 
 
-    def _valid_ant_move(self, startingCell, endCell):
-        toExplore = set([startingCell])
-        visited = set([startingCell])
+# +++               +++
+# +++ One Hive rule +++
+# +++               +++
+    def _one_hive(self, piece):
+        """
+        Check if removing a piece doesn't break the one hive rule.
+        Returns False if the hive is broken.
+        """
+        originalPos = self.locate(str(piece))
+        # if the piece is not in the board then moving it won't break the hive
+        if originalPos is None:
+            return True
+        # if there is another piece in the same cell then the one hive rule
+        # won't be broken
+        pic = self.piecesInCell[originalPos]
+        if len(pic) > 1:
+            return True
+
+        # temporarily remove the piece
+        del self.piecesInCell[originalPos]
+
+        # Get all pieces that are in contact with the removed one and try to
+        # reach all of them from one of them.
+        occupied = self._occupied_surroundings(originalPos)
+        visited = set()
+        toExplore = set([occupied[0]])
+        toReach = set(occupied[1:])
+        res = False
+
+        while len(toExplore) > 0:
+            found = []
+            for cell in toExplore:
+                found += self._occupied_surroundings(cell)
+                visited.add(cell)
+            toExplore = set(found) - visited
+            if toReach.issubset(visited):
+                res = True
+                break
+
+        # restore the removed piece
+        self.piecesInCell[originalPos] = pic
+        return res
+
+# --- ---
+
+# +++                +++
+# +++ Movement rules +++
+# +++                +++
+    def _valid_ant_move(self, ant, startCell, endCell):
+        # check if ant has no piece on top blocking the move
+        if not self.piecesInCell[startCell][-1] == ant:
+            return False
+        # temporarily remove ant
+        del self.piecesInCell[startCell]
+
+        toExplore = set([startCell])
+        visited = set([startCell])
         res = False
 
         while len(toExplore) > 0:
@@ -267,42 +302,17 @@ class Hive(object):
         return res
 
 
-    def _valid_queen_move(self, startingCell, endCell):
-        return endCell in self._bee_moves(startingCell)
-
-
-    def _valid_spider_move(self, startingCell, endCell):
-        visited = set()
-        firstStep = set()
-        secondStep = set()
-        thirdStep = set()
-
-        visited.add(startingCell)
-
-        firstStep.update(set(self._bee_moves(startingCell)))
-        visited.update(firstStep)
-
-        for c in firstStep:
-            secondStep.update(set(self._bee_moves(c)))
-        secondStep.difference_update(visited)
-        visited.update(secondStep)
-
-        for c in secondStep:
-            thirdStep.update(set(self._bee_moves(c)))
-        thirdStep.difference_update(visited)
-
-        return endCell in thirdStep
-
-
-    def _valid_beetle_move(self, startingCell, endCell):
+    def _valid_beetle_move(self, beetle, startCell, endCell):
+        # is on top of the hive or on the ground?
+        beetle
         return True
 
 
-    def _valid_grasshopper_move(self, startingCell, endCell):
+    def _valid_grasshopper_move(self, grasshopper, startCell, endCell):
         # TODO: add function to HexBoard that find cells in a straight line
 
         # is the move in only one direction?
-        (sx, sy) = startingCell
+        (sx, sy) = startCell
         (ex, ey) = endCell
         dx = ex - sx
         dy = ey - sy
@@ -319,17 +329,17 @@ class Hive(object):
             if abs(dy) <= 1:
                 return False
 
-        moveDir = self.board.get_line_dir(startingCell, endCell)
-        # must muve in a straigh line
+        moveDir = self.board.get_line_dir(startCell, endCell)
+        # must move in a straigh line
         if moveDir is None or moveDir == 0:
             return False
 
         # are all in-between cells occupied?
-        cell = self.board.get_dir_cell(startingCell, moveDir)
-        while cell != endCell:
-            if self._is_cell_free(cell):
+        c = self.board.get_dir_cell(startCell, moveDir)
+        while c != endCell:
+            if self._is_cell_free(c):
                 return False
-            cell = self.board.get_dir_cell(cell, moveDir)
+            c = self.board.get_dir_cell(c, moveDir)
 
         # is the endCell free?
         if not self._is_cell_free(endCell):
@@ -338,25 +348,30 @@ class Hive(object):
         return True
 
 
-    def _is_cell_free(self, cell):
-        res = True
-        if cell in self.piecesInCell:
-            res = len(self.piecesInCell) == 0
-        return res
+    def _valid_queen_move(self, queen, startCell, endCell):
+        return endCell in self._bee_moves(startCell)
 
 
-    def _occupied_surroundings(self, cell):
-        surroundings = self.board.get_surrounding(cell)
-        return [c for c in surroundings if not self._is_cell_free(c)]
+    def _valid_spider_move(self, spider, startCell, endCell):
+        visited = set()
+        firstStep = set()
+        secondStep = set()
+        thirdStep = set()
 
+        visited.add(startCell)
 
-    # TODO: rename/remove this function. probably should not be exposed
-    def _poc2cell(self, refPiece, pointOfContact):
-        """
-        Translates a relative position (piece, point of contact) into
-        a board cell (x, y).
-        """
-        refCell = self.locate(refPiece)
-        return self.board.get_dir_cell(refCell, pointOfContact)
+        firstStep.update(set(self._bee_moves(startCell)))
+        visited.update(firstStep)
 
+        for c in firstStep:
+            secondStep.update(set(self._bee_moves(c)))
+        secondStep.difference_update(visited)
+        visited.update(secondStep)
 
+        for c in secondStep:
+            thirdStep.update(set(self._bee_moves(c)))
+        thirdStep.difference_update(visited)
+
+        return endCell in thirdStep
+
+# --- ---
