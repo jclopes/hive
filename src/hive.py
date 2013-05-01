@@ -39,13 +39,13 @@ class Hive(object):
         return self.piecesInCell.get(cell, [])
 
 
-    def locate(self, piece):
+    def locate(self, pieceName):
         """
         Returns the cell where the piece is positioned.
-        piece is a piece identifier (string)
+        pieceName is a piece identifier (string)
         """
         res = None
-        pp = self.playedPieces.get(str(piece))
+        pp = self.playedPieces.get(pieceName)
         if pp is not None:
             res = pp['cell']
 

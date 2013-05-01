@@ -90,7 +90,7 @@ class HiveShellClient(object):
             direction = self.poc2direction(pointOfContact)
 
         # if the piece is not on the board
-        if self.hive.locate(actPiece) is None:
+        if self.hive.locate(str(actPiece)) is None:
             try:
                 self.hive.place_piece(p, refPiece, direction)
             except HiveException, e:

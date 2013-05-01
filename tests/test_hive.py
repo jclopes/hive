@@ -73,8 +73,8 @@ class TestHive(TestCase):
 
 
     def test_ant_moves(self):
-        startCell = self.hive.locate(self.piece['bA1'])
-        end_cell = self.hive._poc2cell('wS1', self.hive.W)
+        startCell = self.hive.locate('bA1')
+        endCell = self.hive._poc2cell('wS1', self.hive.W)
         self.assertFalse(
             self.hive._valid_ant_move(startCell, end_cell)
         )
@@ -100,8 +100,8 @@ class TestHive(TestCase):
 
 
     def test_grasshopper_moves(self):
-        starting_cell = self.hive.locate(self.piece['bG1'])
-        end_cell = self.hive._poc2cell('wS1', self.hive.W)
+        starting_cell = self.hive.locate('bG1')
+        endCell = self.hive._poc2cell('wS1', self.hive.W)
         self.assertTrue(
             self.hive._valid_grasshopper_move(starting_cell, end_cell)
         )
@@ -116,8 +116,8 @@ class TestHive(TestCase):
             self.hive._valid_grasshopper_move(starting_cell, end_cell)
         )
 
-        starting_cell = self.hive.locate(self.piece['wG1'])
-        end_cell = self.hive._poc2cell('wB1', self.hive.NE)
+        starting_cell = self.hive.locate('wG1')
+        endCell = self.hive._poc2cell('wB1', self.hive.NE)
         self.assertTrue(
             self.hive._valid_grasshopper_move(starting_cell, end_cell)
         )
@@ -128,19 +128,19 @@ class TestHive(TestCase):
         bB2 = HivePiece('b', 'B', 2)
 
         # place over another piece
-        cell = self.hive._poc2cell(self.piece['wS1'], self.hive.SW)
+        cell = self.hive._poc2cell('wS1', self.hive.SW)
         self.assertFalse(
             self.hive._validate_place_piece(wA1, cell)
         )
 
         # valid placement
-        cell = self.hive._poc2cell(self.piece['bG1'], self.hive.E)
+        cell = self.hive._poc2cell('bG1', self.hive.E)
         self.assertTrue(
             self.hive._validate_place_piece(bB2, cell)
         )
 
         # wrong color
-        cell = self.hive._poc2cell(self.piece['wQ1'], self.hive.E)
+        cell = self.hive._poc2cell('wQ1', self.hive.E)
         self.assertFalse(
             self.hive._validate_place_piece(wA1, cell)
         )
@@ -149,11 +149,11 @@ class TestHive(TestCase):
     def test_move_piece(self):
         bB1 = self.piece['bB1']
         bS1 = self.piece['bS1']
-        cell = self.hive.locate(bS1)
+        cell = self.hive.locate('bS1')
         self.hive.move_piece(bB1, 'bS1', 0)
         pieces = self.hive.get_pieces(cell)
 
-        self.assertEquals(cell, self.hive.locate(bB1))
+        self.assertEquals(cell, self.hive.locate('bB1'))
         self.assertEquals(2, len(pieces))
         self.assertTrue(str(bB1) in pieces)
         self.assertTrue(str(bS1) in pieces)
