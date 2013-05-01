@@ -15,6 +15,7 @@ class TestHive(TestCase):
         'wB2': HivePiece('w', 'B', 2),
         'wG1': HivePiece('w', 'G', 1),
         'bS1': HivePiece('b', 'S', 1),
+        'bS2': HivePiece('b', 'S', 2),
         'bQ1': HivePiece('b', 'Q', 1),
         'bB1': HivePiece('b', 'B', 1),
         'bA1': HivePiece('b', 'A', 1),
@@ -121,7 +122,7 @@ class TestHive(TestCase):
         )
 
         beetle = self.piece['wB2']
-        self.hive.place_piece(self.piece['wB2'], 'wQ1', self.hive.W)
+        self.hive.place_piece(beetle, 'wQ1', self.hive.W)
         startCell = self.hive._poc2cell('wQ1', self.hive.W)
         endCell = self.hive._poc2cell('wQ1', self.hive.NW)
         self.assertFalse(
@@ -137,8 +138,20 @@ class TestHive(TestCase):
         )
 
         # moving on top of the pieces
+        beetle = self.piece['bB1']
+        self.hive.move_piece(beetle, 'bS1', self.hive.O)
+        startCell = self.hive.locate('bB1')
+        endCell = self.hive._poc2cell('bS1', self.hive.W)
+        self.assertTrue(
+            self.hive._valid_beetle_move(beetle, startCell, endCell)
+        )
 
         # moving from top to ground
+        startCell = self.hive.locate('bB1')
+        endCell = self.hive._poc2cell('bS1', self.hive.SW)
+        self.assertTrue(
+            self.hive._valid_beetle_move(beetle, startCell, endCell)
+        )
 
 
     def test_grasshopper_moves(self):
@@ -164,6 +177,63 @@ class TestHive(TestCase):
         endCell = self.hive._poc2cell('wB1', self.hive.NE)
         self.assertTrue(
             self.hive._valid_grasshopper_move(grasshopper, startCell, endCell)
+        )
+
+
+    def test_queen_moves(self):
+        queen = self.piece['bQ1']
+        startCell = self.hive.locate('bQ1')
+        endCell = self.hive._poc2cell('bQ1', self.hive.E)
+        self.assertTrue(
+            self.hive._valid_queen_move(queen, startCell, endCell)
+        )
+
+        endCell = self.hive._poc2cell('bQ1', self.hive.SW)
+        self.assertFalse(
+            self.hive._valid_queen_move(queen, startCell, endCell)
+        )
+
+        # moving out of a surrounding situation
+        queen = self.piece['wQ1']
+        bA1 = self.piece['bA1']
+        self.hive.move_piece(queen, 'wS1', self.hive.W)
+        self.hive.move_piece(bA1, 'wG1', self.hive.SE)
+
+        startCell = self.hive.locate('wQ1')
+        endCell = self.hive._poc2cell('wS1', self.hive.SW)
+        self.assertFalse(
+            self.hive._valid_queen_move(queen, startCell, endCell)
+        )
+
+
+    def test_spider_moves(self):
+        spider = self.piece['bS2']
+        self.hive.place_piece(spider, 'bA1', self.hive.SE)
+
+        startCell = self.hive.locate('bS2')
+        endCell = self.hive._poc2cell('wQ1', self.hive.E)
+        self.assertFalse(
+            self.hive._valid_spider_move(spider, startCell, endCell)
+        )
+
+        endCell = self.hive._poc2cell('wQ1', self.hive.SW)
+        self.assertTrue(
+            self.hive._valid_spider_move(spider, startCell, endCell)
+        )
+
+        endCell = self.hive._poc2cell('wQ1', self.hive.W)
+        self.assertFalse(
+            self.hive._valid_spider_move(spider, startCell, endCell)
+        )
+
+        endCell = self.hive._poc2cell('bG1', self.hive.E)
+        self.assertTrue(
+            self.hive._valid_spider_move(spider, startCell, endCell)
+        )
+
+        endCell = self.hive._poc2cell('bA1', self.hive.E)
+        self.assertFalse(
+            self.hive._valid_spider_move(spider, startCell, endCell)
         )
 
 
@@ -194,7 +264,7 @@ class TestHive(TestCase):
         # move beetle over spider
         bB1 = self.piece['bB1']
         cell = self.hive.locate('bS1')
-        self.hive.move_piece(bB1, 'bS1', 0)
+        self.hive.move_piece(bB1, 'bS1', self.hive.O)
         pieces = self.hive.get_pieces(cell)
 
         self.assertEquals(cell, self.hive.locate('bB1'))
