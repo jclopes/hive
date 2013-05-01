@@ -360,5 +360,3 @@ class Hive(object):
         return self.board.get_dir_cell(refCell, pointOfContact)
 
 
-    def __repr__(self):
-        return str(self.board)
