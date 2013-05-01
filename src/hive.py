@@ -173,10 +173,8 @@ class Hive(object):
 
 
     def _is_cell_free(self, cell):
-        res = True
-        if cell in self.piecesInCell:
-            res = len(self.piecesInCell) == 0
-        return res
+        pic = self.piecesInCell.get(cell, [])
+        return len(pic) == 0
 
 
     def _occupied_surroundings(self, cell):
