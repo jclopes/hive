@@ -304,9 +304,26 @@ class Hive(object):
 
 
     def _valid_beetle_move(self, beetle, startCell, endCell):
-        # is on top of the hive or on the ground?
-        beetle
-        return True
+        # check if beetle has no piece on top blocking the move
+        if not self.piecesInCell[startCell][-1] == str(beetle):
+            return False
+        # temporarily remove beetle
+        self.piecesInCell[startCell].remove(str(beetle))
+
+        res = False
+        # are we on top of the hive?
+        if len(self.piecesInCell[startCell]) > 0:
+            res = endCell in self.board.get_surrounding(startCell)
+        else:
+            res = endCell in (
+                self._bee_moves(startCell) +
+                self._occupied_surroundings(startCell)
+            )
+
+        # restore beetle to it's original position
+        self.piecesInCell[startCell].append(str(beetle))
+
+        return res
 
 
     def _valid_grasshopper_move(self, grasshopper, startCell, endCell):

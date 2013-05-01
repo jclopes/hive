@@ -12,6 +12,7 @@ class TestHive(TestCase):
         'wS1': HivePiece('w', 'S', 1),
         'wS2': HivePiece('w', 'S', 2),
         'wB1': HivePiece('w', 'B', 1),
+        'wB2': HivePiece('w', 'B', 2),
         'wG1': HivePiece('w', 'G', 1),
         'bS1': HivePiece('b', 'S', 1),
         'bQ1': HivePiece('b', 'Q', 1),
@@ -84,10 +85,6 @@ class TestHive(TestCase):
             self.hive._valid_ant_move(self.piece['bA1'], startCell, endCell)
         )
 
-        # TODO: FIXME: This test should return False!
-        # the problem is that when we test if the southwest of 'bA1' is
-        # reachable from west of 'bA1' it returns True because 'bA1' cell is
-        # still ocuppied.
         endCell = self.hive._poc2cell('bA1', self.hive.SW)
         self.assertFalse(
             self.hive._valid_ant_move(self.piece['bA1'], startCell, endCell)
@@ -117,10 +114,14 @@ class TestHive(TestCase):
         self.assertTrue(
             self.hive._valid_beetle_move(beetle, startCell, endCell)
         )
+
         endCell = self.hive._poc2cell('bB1', self.hive.NW)
         self.assertFalse(
             self.hive._valid_beetle_move(beetle, startCell, endCell)
         )
+
+        beetle = self.piece['wB2']
+        self.hive.place_piece(self.piece['wB2'], 'wQ1', self.hive.W)
         startCell = self.hive._poc2cell('wQ1', self.hive.W)
         endCell = self.hive._poc2cell('wQ1', self.hive.NW)
         self.assertFalse(
@@ -128,6 +129,7 @@ class TestHive(TestCase):
         )
 
         # moving from ground to top
+        beetle = self.piece['bB1']
         startCell = self.hive.locate('bB1')
         endCell = self.hive._poc2cell('bS1', self.hive.O)
         self.assertTrue(
