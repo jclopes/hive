@@ -124,13 +124,9 @@ class Hive(object):
             'S': self._valid_spider_move
         }
 
-        validate_fun_map[moving_piece.kind](pp['piece'], pp['cell'], targetCell)
-
-        # - check that end position is accessible
-        #   - check if the end position is free unless is a move on top
-        #   - if the move is not a jump
-        #     - check that the end position is in the periphery of the board
-        return True
+        return validate_fun_map[moving_piece.kind](
+            pp['piece'], pp['cell'], targetCell
+        )
 
 
     def _validate_place_piece(self, piece, targetCell):
