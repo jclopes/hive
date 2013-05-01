@@ -371,6 +371,13 @@ class Hive(object):
 
 
     def _valid_spider_move(self, spider, startCell, endCell):
+        # check if spider has no piece on top blocking the move
+        if not self.piecesInCell[startCell][-1] == str(spider):
+            return False
+        # temporarily remove spider
+        self.piecesInCell[startCell].remove(str(spider))
+
+
         visited = set()
         firstStep = set()
         secondStep = set()
@@ -389,6 +396,9 @@ class Hive(object):
         for c in secondStep:
             thirdStep.update(set(self._bee_moves(c)))
         thirdStep.difference_update(visited)
+
+        # restore spider to it's original position
+        self.piecesInCell[startCell].append(str(spider))
 
         return endCell in thirdStep
 
