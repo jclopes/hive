@@ -203,20 +203,21 @@ class Hive(object):
         for i in range(6):
             target = surroundings[i-1]
             # is the target cell free?
-            if self._is_cell_free(target):
-                # does it have an adjacent fee cell that is also adjacent to the
+            if not self._is_cell_free(target):
+                continue
+            # does it have an adjacent fee cell that is also adjacent to the
+            # starting cell?
+            if (
+                self._is_cell_free(surroundings[i])
+                or self._is_cell_free(surroundings[i-2])
+            ):
+                # does it have an adjacent occupied cell other then the
                 # starting cell?
-                if (
-                    self._is_cell_free(surroundings[i])
-                    or self._is_cell_free(surroundings[i-2])
-                ):
-                    # does it have an adjacent occupied cell other then the
-                    # starting cell?
-                    tOSurroundings = self._occupied_surroundings(target)
-                    if cell in tOSurroundings:
-                        tOSurroundings.remove(cell)
-                    if len(tOSurroundings) > 0:
-                        available_moves.append(target)
+                tOSurroundings = self._occupied_surroundings(target)
+                if cell in tOSurroundings:
+                    tOSurroundings.remove(cell)
+                if len(tOSurroundings) > 0:
+                    available_moves.append(target)
 
         return available_moves
 
