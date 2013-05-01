@@ -220,7 +220,7 @@ class Hive(object):
                     if cell in tOSurroundings:
                         tOSurroundings.remove(cell)
                     if len(tOSurroundings) > 0:
-                        available_moves.append(surroundings[i-1])
+                        available_moves.append(target)
 
         return available_moves
 
@@ -275,10 +275,10 @@ class Hive(object):
 # +++                +++
     def _valid_ant_move(self, ant, startCell, endCell):
         # check if ant has no piece on top blocking the move
-        if not self.piecesInCell[startCell][-1] == ant:
+        if not self.piecesInCell[startCell][-1] == str(ant):
             return False
         # temporarily remove ant
-        del self.piecesInCell[startCell]
+        self.piecesInCell[startCell].remove(str(ant))
 
         toExplore = set([startCell])
         visited = set([startCell])
@@ -296,6 +296,9 @@ class Hive(object):
 
             visited.update(found)
             toExplore = found
+
+        # restore ant to it's original position
+        self.piecesInCell[startCell].append(str(ant))
 
         return res
 
