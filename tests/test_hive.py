@@ -76,50 +76,90 @@ class TestHive(TestCase):
         startCell = self.hive.locate('bA1')
         endCell = self.hive._poc2cell('wS1', self.hive.W)
         self.assertFalse(
-            self.hive._valid_ant_move(startCell, end_cell)
+            self.hive._valid_ant_move(startCell, endCell)
         )
 
-        end_cell = self.hive._poc2cell('bS1', self.hive.SW)
-        self.assertTrue(
-            self.hive._valid_ant_move(startCell, end_cell)
+        endCell = (-2, 2)
+        self.assertFalse(
+            self.hive._valid_ant_move(startCell, endCell)
         )
 
-        end_cell = self.hive._poc2cell('wS1', self.hive.NE)
-        self.assertTrue(
-            self.hive._valid_ant_move(startCell, end_cell)
+        # TODO: FIXME: This test should return False!
+        # the problem is that when we test if the southwest of 'bA1' is
+        # reachable from west of 'bA1' it returns True because 'bA1' cell is
+        # still ocuppied.
+        endCell = self.hive._poc2cell('bA1', self.hive.SW)
+        self.assertFalse(
+            self.hive._valid_ant_move(startCell, endCell)
         )
 
-        end_cell = self.hive._poc2cell('wQ1', self.hive.W)
+        endCell = self.hive._poc2cell('bS1', self.hive.SW)
         self.assertTrue(
-            self.hive._valid_ant_move(startCell, end_cell)
+            self.hive._valid_ant_move(startCell, endCell)
+        )
+
+        endCell = self.hive._poc2cell('wS1', self.hive.NE)
+        self.assertTrue(
+            self.hive._valid_ant_move(startCell, endCell)
+        )
+
+        endCell = self.hive._poc2cell('wQ1', self.hive.W)
+        self.assertTrue(
+            self.hive._valid_ant_move(startCell, endCell)
         )
 
 
     def test_beetle_moves(self):
-        pass
+        # moving in the ground level
+        beetle = self.piece['bB1']
+        startCell = self.hive.locate('bB1')
+        endCell = self.hive._poc2cell('wS2', self.hive.E)
+        self.assertTrue(
+            self.hive._valid_beetle_move(beetle, startCell, endCell)
+        )
+        endCell = self.hive._poc2cell('bB1', self.hive.NW)
+        self.assertFalse(
+            self.hive._valid_beetle_move(beetle, startCell, endCell)
+        )
+        startCell = self.hive._poc2cell('wQ1', self.hive.W)
+        endCell = self.hive._poc2cell('wQ1', self.hive.NW)
+        self.assertFalse(
+            self.hive._valid_beetle_move(beetle, startCell, endCell)
+        )
+
+        # moving from ground to top
+        startCell = self.hive.locate('bB1')
+        endCell = self.hive._poc2cell('bS1', self.hive.O)
+        self.assertTrue(
+            self.hive._valid_beetle_move(beetle, startCell, endCell)
+        )
+
+        # moving on top of the pieces
+
+        # moving from top to ground
 
 
     def test_grasshopper_moves(self):
-        starting_cell = self.hive.locate('bG1')
+        startCell = self.hive.locate('bG1')
         endCell = self.hive._poc2cell('wS1', self.hive.W)
         self.assertTrue(
-            self.hive._valid_grasshopper_move(starting_cell, end_cell)
+            self.hive._valid_grasshopper_move(startCell, endCell)
         )
 
-        end_cell = self.hive._poc2cell('bA1', self.hive.SW)
+        endCell = self.hive._poc2cell('bA1', self.hive.SW)
         self.assertTrue(
-            self.hive._valid_grasshopper_move(starting_cell, end_cell)
+            self.hive._valid_grasshopper_move(startCell, endCell)
         )
 
-        end_cell = self.hive._poc2cell('wG1', self.hive.W)
+        endCell = self.hive._poc2cell('wG1', self.hive.W)
         self.assertFalse(
-            self.hive._valid_grasshopper_move(starting_cell, end_cell)
+            self.hive._valid_grasshopper_move(startCell, endCell)
         )
 
-        starting_cell = self.hive.locate('wG1')
+        startCell = self.hive.locate('wG1')
         endCell = self.hive._poc2cell('wB1', self.hive.NE)
         self.assertTrue(
-            self.hive._valid_grasshopper_move(starting_cell, end_cell)
+            self.hive._valid_grasshopper_move(startCell, endCell)
         )
 
 
