@@ -3,6 +3,10 @@ TODO
 
 - Rename Hive.poc2cell
 
-- Write tests for _validate_place_piece
+- Check for endgame
+
+- Keep track of the pieces available to each player
 
 - Queen in the first 4 moves rule
+
+- No Queen in the first move rule
