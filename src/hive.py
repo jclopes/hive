@@ -29,6 +29,14 @@ class Hive(object):
         self.piecesInCell = {}
 
 
+    def setup(self):
+        """
+        Prepare the game to be played
+        """
+        # Add pieces to the players hands
+        raise NotImplemented
+
+
     def get_board_boundaries(self):
         """returns the coordinates of the board limits."""
         return self.board.get_boundaries()
@@ -133,6 +141,14 @@ class Hive(object):
                     return False
 
         return True
+
+
+    def _check_victory(self):
+        """
+        Check if white wins or black wins or draw or not finished
+        """
+        # if queen is surrounded
+        return 0
 
 
     def _validate_move_piece(self, moving_piece, targetCell):
