@@ -99,6 +99,42 @@ class Hive(object):
         return targetCell
 
 
+    def _validate_turn(self, turn, piece, action):
+        """
+        Verifies if the action is valid on this turn.
+        """
+        is_even_turn = (turn % 2) == 0
+
+        # White player plays on the odd turns
+        if (not is_even_turn) and piece.color != 'w':
+            return False
+
+        # Black player plays on the even turns
+        if is_even_turn and piece.color != 'b':
+            return False
+
+        # Move actions are only allowed after the queen is on the board
+        if action == 'move':
+            if is_even_turn and (not 'bQ1' in self.playedPieces):
+                return False
+            if (not is_even_turn) and (not 'wQ1' in self.playedPieces):
+                return False
+
+        # White Queen must be placed by turn 7
+        if turn == 7:
+            if not ('wQ1' in self.playedPieces):
+                if str(piece) != 'wQ1' or action != 'place':
+                    return False
+
+        # Black Queen must be placed by turn 8
+        if turn == 8:
+            if not ('bQ1' in self.playedPieces):
+                if str(piece) != 'bQ1' or action != 'place':
+                    return False
+
+        return True
+
+
     def _validate_move_piece(self, moving_piece, targetCell):
         # check if the piece has been placed
         pp = self.playedPieces.get(str(moving_piece))
