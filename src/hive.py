@@ -13,11 +13,11 @@ class Hive(object):
     """
 
     # Directions
-    O = HexBoard.HX_O   # origin/on-top
-    W = HexBoard.HX_W   # west
+    O = HexBoard.HX_O    # origin/on-top
+    W = HexBoard.HX_W    # west
     NW = HexBoard.HX_NW  # north-west
     NE = HexBoard.HX_NE  # north-east
-    E = HexBoard.HX_E   # east
+    E = HexBoard.HX_E    # east
     SE = HexBoard.HX_SE  # south-east
     SW = HexBoard.HX_SW  # south-west
 
@@ -146,7 +146,6 @@ class Hive(object):
 
         # if it's the first turn we don't need to validate
         if self.turn == 1:
-            # TODO: turnament rules don't allow playing Queen on first turn
             return True
 
         # if it's the second turn we put it without validating touching colors
@@ -178,7 +177,7 @@ class Hive(object):
         return [c for c in surroundings if not self._is_cell_free(c)]
 
 
-    # TODO: rename/remove this function. probably should not be exposed
+    # TODO: rename/remove this function.
     def _poc2cell(self, refPiece, pointOfContact):
         """
         Translates a relative position (piece, point of contact) into
@@ -335,17 +334,17 @@ class Hive(object):
 
         # horizontal jump
         if dy == 0:
-            # must jump atleast over one piece
+            # must jump at least over one piece
             if abs(dx) <= 1:
                 return False
         # diagonal jump (dy != 0)
         else:
-            # must jump atleast over one piece
+            # must jump at least over one piece
             if abs(dy) <= 1:
                 return False
 
         moveDir = self.board.get_line_dir(startCell, endCell)
-        # must move in a straigh line
+        # must move in a straight line
         if moveDir is None or moveDir == 0:
             return False
 

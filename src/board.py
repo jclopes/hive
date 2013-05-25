@@ -161,12 +161,12 @@ class HexBoard(Board):
         from the left
         """
         res = super(HexBoard, self).get_surrounding((x, y))
-        # if in a even row we insert NW into posistion 1 and SW into position 5
+        # if in a even row we insert NW into position 1 and SW into position 5
         p = y % 2
         if p == 0:
             res.insert(1, (x-1, y-1))
             res.insert(5, (x-1, y+1))
-        # if in a odd row we insert NE into posistion 2 and SE into position 4
+        # if in a odd row we insert NE into position 2 and SE into position 4
         else:
             res.insert(2, (x+1, y-1))
             res.insert(4, (x+1, y+1))
@@ -175,7 +175,7 @@ class HexBoard(Board):
 
     def get_dir_cell(self, cell, direction):
         """
-        Translates a relative position (cell, direction) to the refered
+        Translates a relative position (cell, direction) to the referred
         cell (x, y).
 
         direction in [0, 1, 2, 3, 4, 5, 6] and translates to:
@@ -192,7 +192,7 @@ class HexBoard(Board):
 
     def get_nw_xy(self, (x, y)):
         """
-        Get X;Y coordinates for the uper-left Cell
+        Get X;Y coordinates for the upper-left Cell
         """
         p = y % 2
         nx = x - 1 + p
@@ -202,7 +202,7 @@ class HexBoard(Board):
 
     def get_ne_xy(self, (x, y)):
         """
-        Get X;Y coordinates for the uper-right Cell
+        Get X;Y coordinates for the upper-right Cell
         """
         p = y % 2
         nx = x + p
