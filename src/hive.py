@@ -21,6 +21,13 @@ class Hive(object):
     SE = HexBoard.HX_SE  # south-east
     SW = HexBoard.HX_SW  # south-west
 
+    # End game status
+    UNFINISHED = 0
+    WHITE_WIN = 1
+    BLACK_WIN = 2
+    DRAW = 3
+
+
     def __init__(self):
         self.turn = 0
         self.players = ['w', 'b']
@@ -151,8 +158,33 @@ class Hive(object):
         """
         Check if white wins or black wins or draw or not finished
         """
-        # if queen is surrounded
-        return 0
+        white = False
+        black = False
+        res = self.UNFINISHED
+
+        # if white queen is surrounded => black wins
+        queen = self.playedPieces.get('wQ1')
+        if(
+            queen is not None and
+            len(self._occupied_surroundings(queen['cell'])) == 6
+        ):
+            black = True
+            res = self.BLACK_WIN
+
+        # if black queen is surrounded => white wins
+        queen = self.playedPieces.get('wB1')
+        if(
+            queen is not None and
+            len(self._occupied_surroundings(queen['cell'])) == 6
+        ):
+            white = True
+            res = self.WHITE_WIN
+
+        # if both queens are surrounded
+        if white and black:
+            res = self.DRAW
+
+        return res
 
 
     def _validate_move_piece(self, moving_piece, targetCell):
@@ -229,6 +261,9 @@ class Hive(object):
 
 
     def _occupied_surroundings(self, cell):
+        """
+        Returns a list of surrounding cells that contain a piece.
+        """
         surroundings = self.board.get_surrounding(cell)
         return [c for c in surroundings if not self._is_cell_free(c)]
 
