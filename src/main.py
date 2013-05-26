@@ -109,7 +109,7 @@ class HiveShellClient(object):
         self.player[1] = self.piece_set('w')
         self.player[2] = self.piece_set('b')
         self.hive.turn += 1
-        while True:
+        while self.hive.check_victory() == self.hive.UNFINISHED:
             print self.view
             print "player %s play: " % (2 - (self.hive.turn % 2)),
             try:
