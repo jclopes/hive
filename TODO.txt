@@ -3,10 +3,10 @@ TODO
 
 - Rename Hive.poc2cell
 
-- Check for endgame
-
 - Keep track of the pieces available to each player
 
-- Queen in the first 4 moves rule
+- Testes for check_victory()
 
-- No Queen in the first move rule
+- Tests for Queen in the first 4 moves rule
+
+- Tests No Queen in the first move rule
