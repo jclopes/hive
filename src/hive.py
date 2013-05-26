@@ -107,11 +107,11 @@ class Hive(object):
         return targetCell
 
 
-    def _validate_turn(self, turn, piece, action):
+    def _validate_turn(self, piece, action):
         """
         Verifies if the action is valid on this turn.
         """
-        is_even_turn = (turn % 2) == 0
+        is_even_turn = (self.turn % 2) == 0
 
         # White player plays on the odd turns
         if (not is_even_turn) and piece.color != 'w':
@@ -121,22 +121,26 @@ class Hive(object):
         if is_even_turn and piece.color != 'b':
             return False
 
+        # Tournament rule: no queen in the first move
+        if (self.turn == 1 or self.turn == 2) and piece.kind == 'Q':
+            return False
+
         # Move actions are only allowed after the queen is on the board
         if action == 'move':
-            if is_even_turn and (not 'bQ1' in self.playedPieces):
+            if is_even_turn and ('bQ1' not in self.playedPieces):
                 return False
-            if (not is_even_turn) and (not 'wQ1' in self.playedPieces):
+            if (not is_even_turn) and ('wQ1' not in self.playedPieces):
                 return False
 
-        # White Queen must be placed by turn 7
-        if turn == 7:
-            if not ('wQ1' in self.playedPieces):
+        # White Queen must be placed by turn 7 (4th white action)
+        if self.turn == 7:
+            if 'wQ1' not in self.playedPieces:
                 if str(piece) != 'wQ1' or action != 'place':
                     return False
 
-        # Black Queen must be placed by turn 8
-        if turn == 8:
-            if not ('bQ1' in self.playedPieces):
+        # Black Queen must be placed by turn 8 (4th black action)
+        if self.turn == 8:
+            if 'bQ1' not in self.playedPieces:
                 if str(piece) != 'bQ1' or action != 'place':
                     return False
 
@@ -323,7 +327,7 @@ class Hive(object):
 # +++                +++
     def _valid_ant_move(self, ant, startCell, endCell):
         # check if ant has no piece on top blocking the move
-        if not self.piecesInCell[startCell][-1] == str(ant):
+        if self.piecesInCell[startCell][-1] != str(ant):
             return False
         # temporarily remove ant
         self.piecesInCell[startCell].remove(str(ant))
