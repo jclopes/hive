@@ -124,6 +124,39 @@ class Hive(object):
         return targetCell
 
 
+    def check_victory(self):
+        """
+        Check if white wins or black wins or draw or not finished
+        """
+        white = False
+        black = False
+        res = self.UNFINISHED
+
+        # if white queen is surrounded => black wins
+        queen = self.playedPieces.get('wQ1')
+        if(
+            queen is not None and
+            len(self._occupied_surroundings(queen['cell'])) == 6
+        ):
+            black = True
+            res = self.BLACK_WIN
+
+        # if black queen is surrounded => white wins
+        queen = self.playedPieces.get('wB1')
+        if(
+            queen is not None and
+            len(self._occupied_surroundings(queen['cell'])) == 6
+        ):
+            white = True
+            res = self.WHITE_WIN
+
+        # if both queens are surrounded
+        if white and black:
+            res = self.DRAW
+
+        return res
+
+
     def _validate_turn(self, piece, action):
         """
         Verifies if the action is valid on this turn.
@@ -162,39 +195,6 @@ class Hive(object):
                     return False
 
         return True
-
-
-    def _check_victory(self):
-        """
-        Check if white wins or black wins or draw or not finished
-        """
-        white = False
-        black = False
-        res = self.UNFINISHED
-
-        # if white queen is surrounded => black wins
-        queen = self.playedPieces.get('wQ1')
-        if(
-            queen is not None and
-            len(self._occupied_surroundings(queen['cell'])) == 6
-        ):
-            black = True
-            res = self.BLACK_WIN
-
-        # if black queen is surrounded => white wins
-        queen = self.playedPieces.get('wB1')
-        if(
-            queen is not None and
-            len(self._occupied_surroundings(queen['cell'])) == 6
-        ):
-            white = True
-            res = self.WHITE_WIN
-
-        # if both queens are surrounded
-        if white and black:
-            res = self.DRAW
-
-        return res
 
 
     def _validate_move_piece(self, moving_piece, targetCell):
