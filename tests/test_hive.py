@@ -121,6 +121,7 @@ class TestHive(TestCase):
             self.hive._valid_beetle_move(beetle, startCell, endCell)
         )
 
+        self.hive.turn = 11  # set turn to be white player turn
         beetle = self.piece['wB2']
         self.hive.place_piece(beetle, 'wQ1', self.hive.W)
         startCell = self.hive._poc2cell('wQ1', self.hive.W)
@@ -138,6 +139,7 @@ class TestHive(TestCase):
         )
 
         # moving on top of the pieces
+        self.hive.turn = 12  # set turn to be black player turn
         beetle = self.piece['bB1']
         self.hive.move_piece(beetle, 'bS1', self.hive.O)
         startCell = self.hive.locate('bB1')
@@ -196,7 +198,9 @@ class TestHive(TestCase):
         # moving out of a surrounding situation
         queen = self.piece['wQ1']
         bA1 = self.piece['bA1']
+        self.hive.turn = 11  # set turn to be white player turn
         self.hive.move_piece(queen, 'wS1', self.hive.W)
+        self.hive.turn = 12  # set turn to be black player turn
         self.hive.move_piece(bA1, 'wG1', self.hive.SE)
 
         startCell = self.hive.locate('wQ1')
