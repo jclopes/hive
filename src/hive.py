@@ -69,18 +69,25 @@ class Hive(object):
 
     def move_piece(self, piece, refPiece, refDirection):
         """
-        Verifies if a piece can be played from hand into a given cell.
+        Moves a piece on the playing board.
         """
-        # the move is valid
+
         pieceName = str(piece)
         targetCell = self._poc2cell(refPiece, refDirection)
+
+        # is the move valid
+        if not self._validate_turn(piece, 'move'):
+            raise HiveException("Invalid Piece Placement")
+
         if not self._validate_move_piece(piece, targetCell):
             raise HiveException("Invalid Piece Movement")
 
         pp = self.playedPieces[pieceName]
         startingCell = pp['cell']
+
         # remove the piece from its current location
         self.piecesInCell[startingCell].remove(pieceName)
+
         # places the piece at the target location
         self.board.resize(targetCell)
         pp['cell'] = targetCell
@@ -101,7 +108,10 @@ class Hive(object):
         else:
             targetCell = self._poc2cell(refPieceName, refDirection)
 
-        # the placement is valid
+        # is the placement valid
+        if not self._validate_turn(piece, 'place'):
+            raise HiveException("Invalid Piece Placement")
+
         if not self._validate_place_piece(piece, targetCell):
             raise HiveException("Invalid Piece Placement")
 
