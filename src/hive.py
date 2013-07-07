@@ -34,15 +34,48 @@ class Hive(object):
         self.board = HexBoard()
         self.playedPieces = {}
         self.piecesInCell = {}
-
+        self.unplayedPieces = {}
 
     def setup(self):
         """
         Prepare the game to be played
         """
         # Add pieces to the players hands
-        raise NotImplemented
+        self.unplayedPieces[0] = self._piece_set('w')
+        self.unplayedPieces[1] = self._piece_set('b')
+        self.turn = 1
 
+
+    def action(self, actPiece, refPiece=None, direction=None):
+        """Perform the player action.
+        return True or ExceptionType
+        TODO: elaborate on the exceptions
+        """
+        player = 1 - self.turn % 2
+
+        piece = self.unplayedPieces[player].pop(actPiece, None)
+        if piece is not None:
+            self.place_piece(piece, refPiece, direction)
+        else:
+            piece = self.playedPieces.get(actPiece, None)
+            if piece is None:
+                raise HiveException
+            else:
+                self.move_piece(piece, refPiece, direction)
+        
+        # perform turn increment - TODO:if succesful
+        self.turn += 1
+        return True
+
+    def get_unplayed_pieces(self, player):
+        return self.unplayedPieces[player]
+
+    def get_active_player(self):
+        if turn <= 0:
+            return None
+
+        ap = 1 - (self.turn % 2)
+        return self.players[ap]
 
     def get_active_player(self):
         if turn <= 0:
@@ -327,6 +360,26 @@ class Hive(object):
                     available_moves.append(target)
 
         return available_moves
+
+
+    def _piece_set(self, color):
+        """
+        Return a full set of hive pieces
+        """
+        pieceSet = {}
+        for i in xrange(3):
+            ant = HivePiece(color, 'A', i+1)
+            pieceSet[str(ant)] = ant
+            grasshopper = HivePiece(color, 'G', i+1)
+            pieceSet[str(grasshopper)] = grasshopper
+        for i in xrange(2):
+            spider = HivePiece(color, 'S', i+1)
+            pieceSet[str(spider)] = spider
+            beetle = HivePiece(color, 'B', i+1)
+            pieceSet[str(beetle)] = beetle
+        queen = HivePiece(color, 'Q', 1)
+        pieceSet[str(queen)] = queen
+        return pieceSet
 
 
 # +++               +++
