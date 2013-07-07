@@ -89,18 +89,7 @@ class HiveShellClient(object):
         if pointOfContact is not None:
             direction = self.poc2direction(pointOfContact)
 
-        # if the piece is not on the board
-        if self.hive.locate(str(actPiece)) is None:
-            try:
-                self.hive.place_piece(p, refPiece, direction)
-            except HiveException, e:
-                return False
-        else:
-            try:
-                self.hive.move_piece(p, refPiece, direction)
-            except HiveException, e:
-                return False
-
+        self.hive.action(actPiece, refPiece, direction):
         return True
 
 
@@ -108,10 +97,14 @@ class HiveShellClient(object):
         self.logger = open('game.log', 'w')
         self.player[1] = self.piece_set('w')
         self.player[2] = self.piece_set('b')
-        self.hive.turn += 1
+        self.hive.turn += 1 # white player start
         while self.hive.check_victory() == self.hive.UNFINISHED:
+            active_player = (2 - (self.hive.turn % 2))
             print self.view
-            print "player %s play: " % (2 - (self.hive.turn % 2)),
+            print "pieces available: %s" % sorted(
+                self.player[active_player].keys()
+            )
+            print "player %s play: " % active_player,
             try:
                 cmd = self.input.readline()
             except KeyboardInterrupt, e:

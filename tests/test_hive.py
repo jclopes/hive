@@ -32,26 +32,20 @@ class TestHive(TestCase):
         #  / \ / \ / \ / \ / \ /
         # |   |   |   |bA1|   |
         #  \ / \ / \ / \ / \ /
+        # next is black player turn
+
         self.hive = Hive()
-        self.hive.turn += 1
-        self.hive.place_piece(self.piece['wS1'])
-        self.hive.turn += 1
-        self.hive.place_piece(self.piece['bS1'], 'wS1', self.hive.E)
-        self.hive.turn += 1
-        self.hive.place_piece(self.piece['wQ1'], 'wS1', self.hive.SW)
-        self.hive.turn += 1
-        self.hive.place_piece(self.piece['bQ1'], 'bS1', self.hive.SE)
-        self.hive.turn += 1
-        self.hive.place_piece(self.piece['wS2'], 'wS1', self.hive.NW)
-        self.hive.turn += 1
-        self.hive.place_piece(self.piece['bG1'], 'bS1', self.hive.E)
-        self.hive.turn += 1
-        self.hive.place_piece(self.piece['wB1'], 'wS2', self.hive.W)
-        self.hive.turn += 1
-        self.hive.place_piece(self.piece['bA1'], 'bQ1', self.hive.SW)
-        self.hive.turn += 1
-        self.hive.place_piece(self.piece['wG1'], 'wB1', self.hive.SW)
-        self.hive.turn += 1
+        self.hive.setup()
+
+        self.hive.action('wS1')
+        self.hive.action('bS1', 'wS1', self.hive.E)
+        self.hive.action('wQ1', 'wS1', self.hive.SW)
+        self.hive.action('bQ1', 'bS1', self.hive.SE)
+        self.hive.action('wS2', 'wS1', self.hive.NW)
+        self.hive.action('bG1', 'bS1', self.hive.E)
+        self.hive.action('wB1', 'wS2', self.hive.W)
+        self.hive.action('bA1', 'bQ1', self.hive.SW)
+        self.hive.action('wG1', 'wB1', self.hive.SW)
         self.hive.place_piece(self.piece['bB1'], 'bS1', self.hive.NE)
 
 
@@ -275,3 +269,13 @@ class TestHive(TestCase):
         self.assertEquals(2, len(pieces))
         self.assertTrue('bB1' in pieces)
         self.assertTrue('bS1' in pieces)
+
+    def test_action(self):
+        # place a piece and verify unplayedPieces dict
+        bS2 = HivePiece('b', 'S', 2)
+        self.hive.action(str(bS2), 'bQ1', self.hive.E)
+        unplayedPieces = self.hive.get_unplayed_pieces(0)
+
+        self.assertFalse('bS2' in unplayedPieces)
+
+
