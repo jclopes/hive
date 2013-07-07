@@ -70,6 +70,13 @@ class Hive(object):
     def get_unplayed_pieces(self, player):
         return self.unplayedPieces[player]
 
+    def get_active_player(self):
+        if turn <= 0:
+            return None
+
+        ap = 1 - (self.turn % 2)
+        return self.players[ap]
+
     def get_board_boundaries(self):
         """returns the coordinates of the board limits."""
         return self.board.get_boundaries()
