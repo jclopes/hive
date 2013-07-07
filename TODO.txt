@@ -13,3 +13,5 @@ TODO
 
 - change the logic for player numbering in main.py to match that of hive.py
   e.g. white is 0 and black is 1
+
+- Create a plugin system to support new pieces and rules
