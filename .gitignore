@@ -1,5 +1,8 @@
 *.py[cod]
 
+# application logs
+*.log
+
 # C extensions
 *.so
 
@@ -36,3 +39,6 @@ nosetests.xml
 
 # virtual env
 hive_py_env
+
+# OS X
+.DS_Store
