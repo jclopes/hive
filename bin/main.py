@@ -98,7 +98,10 @@ class HiveShellClient(object):
         self.player[1] = self.piece_set('w')
         self.player[2] = self.piece_set('b')
         self.hive.turn += 1 # white player start
+        self.hive.setup()
+
         while self.hive.check_victory() == self.hive.UNFINISHED:
+            print "Turn: %s" % self.hive.turn
             active_player = (2 - (self.hive.turn % 2))
             print self.view
             print "pieces available: %s" % sorted(
@@ -110,7 +113,9 @@ class HiveShellClient(object):
             except KeyboardInterrupt, e:
                 break
             if self.exec_cmd(cmd.strip(), self.hive.turn):
-                self.hive.turn += 1
+                print
+                print "=" * 79
+                print
             else:
                 print "invalid play!"
 

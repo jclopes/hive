@@ -41,8 +41,8 @@ class Hive(object):
         Prepare the game to be played
         """
         # Add pieces to the players hands
-        self.unplayedPieces[0] = self._piece_set('w')
-        self.unplayedPieces[1] = self._piece_set('b')
+        self.unplayedPieces['w'] = self._piece_set('w')
+        self.unplayedPieces['b'] = self._piece_set('b')
         self.turn = 1
 
 
@@ -51,7 +51,7 @@ class Hive(object):
         return True or ExceptionType
         TODO: elaborate on the exceptions
         """
-        player = 1 - self.turn % 2
+        player = self.get_active_player()
 
         piece = self.unplayedPieces[player].pop(actPiece, None)
         if piece is not None:
@@ -62,7 +62,7 @@ class Hive(object):
                 raise HiveException
             else:
                 self.move_piece(piece, refPiece, direction)
-        
+
         # perform turn increment - TODO:if succesful
         self.turn += 1
         return True
@@ -70,15 +70,9 @@ class Hive(object):
     def get_unplayed_pieces(self, player):
         return self.unplayedPieces[player]
 
-    def get_active_player(self):
-        if turn <= 0:
-            return None
-
-        ap = 1 - (self.turn % 2)
-        return self.players[ap]
 
     def get_active_player(self):
-        if turn <= 0:
+        if self.turn <= 0:
             return None
 
         ap = 1 - (self.turn % 2)
