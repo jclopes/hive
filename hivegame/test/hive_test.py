@@ -1,6 +1,6 @@
-from hive import Hive
+from hivegame.hive import Hive
+from hivegame.piece import HivePiece
 from unittest import TestCase
-from piece import HivePiece
 
 
 class TestHive(TestCase):

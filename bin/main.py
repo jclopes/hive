@@ -2,10 +2,10 @@
 
 import time
 import sys
-from board import HexBoard
-from hive import Hive, HiveException
-from piece import HivePiece
-from view import HiveView
+from hivegame.board import HexBoard
+from hivegame.hive import Hive, HiveException
+from hivegame.piece import HivePiece
+from hivegame.view import HiveView
 
 
 class HiveShellClient(object):
@@ -89,7 +89,7 @@ class HiveShellClient(object):
         if pointOfContact is not None:
             direction = self.poc2direction(pointOfContact)
 
-        self.hive.action(actPiece, refPiece, direction):
+        self.hive.action(actPiece, refPiece, direction)
         return True
 
 

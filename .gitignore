@@ -9,6 +9,7 @@
 # Packages
 *.egg
 *.egg-info
+MANIFEST
 dist
 build
 eggs
@@ -36,9 +37,6 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
-
-# virtual env
-hive_py_env
 
 # OS X
 .DS_Store

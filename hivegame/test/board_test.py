@@ -1,4 +1,4 @@
-from board import Board, HexBoard
+from hivegame.board import Board, HexBoard
 from unittest import TestCase
 
 class TestHexBoard(TestCase):
