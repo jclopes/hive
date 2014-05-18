@@ -270,12 +270,11 @@ class TestHive(TestCase):
         self.assertTrue('bB1' in pieces)
         self.assertTrue('bS1' in pieces)
 
+
     def test_action(self):
         # place a piece and verify unplayedPieces dict
         bS2 = HivePiece('b', 'S', 2)
         self.hive.action(str(bS2), 'bQ1', self.hive.E)
-        unplayedPieces = self.hive.get_unplayed_pieces(0)
+        unplayedPieces = self.hive.get_unplayed_pieces('b')
 
         self.assertFalse('bS2' in unplayedPieces)
-
-
