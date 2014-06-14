@@ -57,11 +57,11 @@ class Hive(object):
         if piece is not None:
             self.place_piece(piece, refPiece, direction)
         else:
-            piece = self.playedPieces.get(actPiece, None)
-            if piece is None:
+            ppiece = self.playedPieces.get(actPiece, None)
+            if ppiece is None:
                 raise HiveException
             else:
-                self.move_piece(piece, refPiece, direction)
+                self.move_piece(ppiece['piece'], refPiece, direction)
 
         # perform turn increment - TODO:if succesful
         self.turn += 1

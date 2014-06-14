@@ -278,3 +278,18 @@ class TestHive(TestCase):
         unplayedPieces = self.hive.get_unplayed_pieces('b')
 
         self.assertFalse('bS2' in unplayedPieces)
+
+    def test_first_move(self):
+        """Test that we can move a piece on the 3rd turn
+        wA1, bA1/*wA1, wG1*|wA1, bS1/*bA1, wQ1\*wA1, bA2*\\bA1, wG1|*wA1
+        """
+        hive = Hive()
+        hive.setup()
+
+        hive.action('wA1')
+        hive.action('bA1', 'wA1', hive.NW)
+        hive.action('wG1', 'wA1', hive.E)
+        hive.action('bS1', 'bA1', hive.NW)
+        hive.action('wQ1', 'wA1', hive.SW)
+        hive.action('bA2', 'bA1', hive.NE)
+        hive.action('wG1', 'wA1', hive.W)
