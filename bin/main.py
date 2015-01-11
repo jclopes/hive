@@ -47,6 +47,8 @@ class HiveShellClient(object):
             pointOfContact = None
             refPiece = None
         else:
+            if len(cmd) != 8:
+                raise Exception("Failed to parse command.")
             movingPiece = cmd[:3]
             pointOfContact = cmd[3:5]
             refPiece = cmd[5:]
@@ -78,7 +80,14 @@ class HiveShellClient(object):
 
 
     def exec_cmd(self, cmd, turn):
-        (actPiece, pointOfContact, refPiece) = self.parse_cmd(cmd)
+        try:
+            (actPiece, pointOfContact, refPiece) = self.parse_cmd(cmd)
+        except:
+            return False
+
+        if pointOfContact is None and turn > 1:
+            return False
+
         actPlayer = (2 - (turn % 2))
         try:
             p = self.player[actPlayer][actPiece]
@@ -89,7 +98,10 @@ class HiveShellClient(object):
         if pointOfContact is not None:
             direction = self.poc2direction(pointOfContact)
 
-        self.hive.action(actPiece, refPiece, direction)
+        try:
+            self.hive.action(actPiece, refPiece, direction)
+        except HiveException:
+            return False
         return True
 
 
