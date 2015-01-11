@@ -279,6 +279,7 @@ class TestHive(TestCase):
 
         self.assertFalse('bS2' in unplayedPieces)
 
+
     def test_first_move(self):
         """Test that we can move a piece on the 3rd turn
         wA1, bA1/*wA1, wG1*|wA1, bS1/*bA1, wQ1\*wA1, bA2*\\bA1, wG1|*wA1
@@ -293,3 +294,22 @@ class TestHive(TestCase):
         hive.action('wQ1', 'wA1', hive.SW)
         hive.action('bA2', 'bA1', hive.NE)
         hive.action('wG1', 'wA1', hive.W)
+
+
+    def test_fail_placement(self):
+        """Test that we can place a piece after an incorrect try.
+        wA1, bA1/*wA1, wG1|*bA1, wG1*|wA1
+        """
+        hive = Hive()
+        hive.setup()
+
+        hive.action('wA1')
+        hive.action('bA1', 'wA1', hive.NW)
+        try:
+            # This placement fails
+            hive.action('wG1', 'bA1', hive.W)
+        except:
+            pass
+        # This placement is correct
+        hive.action('wG1', 'wA1', hive.E)
+

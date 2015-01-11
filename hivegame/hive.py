@@ -53,9 +53,11 @@ class Hive(object):
         """
         player = self.get_active_player()
 
-        piece = self.unplayedPieces[player].pop(actPiece, None)
+        piece = self.unplayedPieces[player].get(actPiece, None)
         if piece is not None:
             self.place_piece(piece, refPiece, direction)
+            # Remove piece from the unplayed set
+            del self.unplayedPieces[player][actPiece]
         else:
             ppiece = self.playedPieces.get(actPiece, None)
             if ppiece is None:
