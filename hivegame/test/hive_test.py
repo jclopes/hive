@@ -55,8 +55,8 @@ class TestHive(TestCase):
 
 
     def test_bee_moves(self):
-        beePos = self.hive.locate('wQ1')
-        expected = [(-2, 1), (-1, 0), (0, 1), (0, 2)]
+        beePos = self.hive.locate('wQ1')  # (-1, 1)
+        expected = [(-1, 0), (0, 1)]
         self.assertEquals(expected, self.hive._bee_moves(beePos))
 
         beePos = self.hive.locate('wS1')
@@ -231,6 +231,17 @@ class TestHive(TestCase):
 
         endCell = self.hive._poc2cell('bA1', self.hive.E)
         self.assertFalse(
+            self.hive._valid_spider_move(spider, startCell, endCell)
+        )
+
+
+    def test_spider_moves2(self):
+        spider = self.piece['bS2']
+        self.hive.place_piece(spider, 'bB1', self.hive.NE)
+
+        startCell = self.hive.locate('bS2')
+        endCell = self.hive._poc2cell('wS2', self.hive.NE)
+        self.assertTrue(
             self.hive._valid_spider_move(spider, startCell, endCell)
         )
 

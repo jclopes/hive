@@ -330,7 +330,7 @@ class Hive(object):
 
         A bee can move to a adjacent target position only if:
         - target position is free
-        - and there is a piece adjacent to that position
+        - and there is a piece adjacent to both the bee and that position
         - and there is a free cell that is adjacent to both the bee and the
           target position.
         """
@@ -341,20 +341,13 @@ class Hive(object):
             # is the target cell free?
             if not self._is_cell_free(target):
                 continue
-            # does it have an adjacent fee cell that is also adjacent to the
-            # starting cell?
+            # does it have an adjacent free and an adjancent occupied cell that
+            # is also adjacent to the starting cell?
             if (
                 self._is_cell_free(surroundings[i])
-                or self._is_cell_free(surroundings[i-2])
+                != self._is_cell_free(surroundings[i-2])
             ):
-                # does it have an adjacent occupied cell other then the
-                # starting cell?
-                tOSurroundings = self._occupied_surroundings(target)
-                if cell in tOSurroundings:
-                    tOSurroundings.remove(cell)
-                if len(tOSurroundings) > 0:
-                    available_moves.append(target)
-
+                available_moves.append(target)
         return available_moves
 
 
