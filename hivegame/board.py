@@ -31,13 +31,13 @@
 #   1|   |4
 #    6\ /5
 #
+# 0 => o (origin/on-top)
 # 1 => w (west)
 # 2 => nw (north-west)
 # 3 => ne (north-east)
 # 4 => e (east)
 # 5 => se (south-east)
 # 6 => sw (south-west)
-# 7 => o (origin/on-top)
 
 # A 'cell' is a coordinate representation of a board position (x, y)
 
