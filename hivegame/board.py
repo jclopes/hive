@@ -77,7 +77,8 @@ class Board(object):
                 row.insert(0, [])
 
 
-    def resize(self, (x, y)):
+    def resize(self, t):
+        (x,y) = t
         """
         Resizes the board to include the position (x, y)
         returns the normalized (x, y)
@@ -107,7 +108,8 @@ class Board(object):
         return firstCol, firstRow, lastCol, lastRow
 
 
-    def get_surrounding(self, (x, y)):
+    def get_surrounding(self, t):
+        (x,y) = t
         """
         Returns a list with the surrounding positions sorted clockwise starting
         from the left
@@ -115,14 +117,16 @@ class Board(object):
         return [(x-1, y), (x, y-1), (x+1, y), (x, y+1)]
 
 
-    def get_w_xy(self, (x, y)):
+    def get_w_xy(self, t):
+        (x,y) = t
         """
         Get X;Y coordinates for the west/left Cell
         """
         return (x-1, y)
 
 
-    def get_e_xy(self, (x, y)):
+    def get_e_xy(self, t):
+        (x,y) = t
         """
         Get X;Y coordinates for the east/right Cell
         """
@@ -155,7 +159,8 @@ class HexBoard(Board):
         }
 
 
-    def get_surrounding(self, (x, y)):
+    def get_surrounding(self, t):
+        (x,y) = t
         """
         Returns a list with the surrounding positions sorted clockwise starting
         from the left
@@ -190,7 +195,8 @@ class HexBoard(Board):
         return self.dir2func[direction](cell)
 
 
-    def get_nw_xy(self, (x, y)):
+    def get_nw_xy(self,t):
+        (x,y) = t
         """
         Get X;Y coordinates for the upper-left Cell
         """
@@ -200,7 +206,8 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_ne_xy(self, (x, y)):
+    def get_ne_xy(self, t):
+        (x,y) = t
         """
         Get X;Y coordinates for the upper-right Cell
         """
@@ -210,7 +217,8 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_sw_xy(self, (x, y)):
+    def get_sw_xy(self, t):
+        (x,y) = t
         """
         Get X;Y coordinates for the lower-left Cell
         """
@@ -220,7 +228,8 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_se_xy(self, (x, y)):
+    def get_se_xy(self, t):
+        (x,y) = t
         """
         Get X;Y coordinates for the lower-right Cell
         """
@@ -230,14 +239,16 @@ class HexBoard(Board):
         return (nx, ny)
 
 
-    def get_w_xy(self, (x, y)):
+    def get_w_xy(self, t):
+        (x,y) = t
         """
         Get X;Y coordinates for the left Cell
         """
         return (x-1, y)
 
 
-    def get_e_xy(self, (x, y)):
+    def get_e_xy(self, t):
+        (x,y) = t
         """
         Get X;Y coordinates for the right Cell
         """

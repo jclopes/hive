@@ -91,7 +91,7 @@ class HiveShellClient(object):
         actPlayer = (2 - (turn % 2))
         try:
             p = self.player[actPlayer][actPiece]
-        except Exception, e:
+        except:
             return False
 
         direction = None
@@ -113,25 +113,31 @@ class HiveShellClient(object):
         self.hive.setup()
 
         while self.hive.check_victory() == self.hive.UNFINISHED:
-            print "Turn: %s" % self.hive.turn
+            print ("Turn: %s" % self.hive.turn)
             active_player = (2 - (self.hive.turn % 2))
-            print self.view
-            print "pieces available: %s" % sorted(
+            print (self.view)
+            print ("pieces available: %s" % sorted(
                 self.player[active_player].keys()
-            )
-            print "player %s play: " % active_player,
-            try:
-                cmd = self.input.readline()
-            except KeyboardInterrupt, e:
-                break
-            if self.exec_cmd(cmd.strip(), self.hive.turn):
-                print
-                print "=" * 79
-                print
-            else:
-                print "invalid play!"
+            ))
+            waiting = True
+            while (waiting):
+                try:
+                    cmd = self.input.readline()
+					# cmd = self.input.readline()
+                except KeyboardInterrupt, e:
+                    break
+				
 
-        print "\nThanks for playing Hive. Have a nice day!"
+            print("player %s play: " % active_player)
+			
+            if self.exec_cmd(cmd.strip(), self.hive.turn):
+                print (" =  "*79)
+                print("\n")
+            else:
+                print("invalid play!")
+
+
+        print( "\nThanks for playing Hive. Have a nice day!")
 
 
 def main():
