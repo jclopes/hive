@@ -76,5 +76,11 @@ Development:
 ===========
 
 Running the tests:
-```PYTHONPATH=. python hivegame/test/hive_test.py```
-```PYTHONPATH=. python hivegame/test/board_test.py```
+
+```
+PYTHONPATH=. python hivegame/test/hive_test.py
+```
+
+```
+PYTHONPATH=. python hivegame/test/board_test.py
+```
