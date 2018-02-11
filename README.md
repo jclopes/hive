@@ -71,3 +71,10 @@ can be easily parsed by a machine.
     The only exception to the previous notation is the starting piece of the
     first player. The first move of the first player is just the name of a
     piece since the placement of the 1st piece is always fixed.
+
+Development:
+===========
+
+Running the tests:
+```PYTHONPATH=. python hivegame/test/hive_test.py```
+```PYTHONPATH=. python hivegame/test/board_test.py```
