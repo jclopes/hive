@@ -324,3 +324,27 @@ class TestHive(TestCase):
         # This placement is correct
         hive.action('wG1', 'wA1', hive.E)
 
+
+    def test_victory_conditions(self):
+        """Test that we end the game when a victory/draw condition is meet."""
+        hive = Hive()
+        hive.setup()
+
+        hive.action('wS1')
+        hive.action('bS1', 'wS1', hive.E)
+        hive.action('wQ1', 'wS1', hive.NW)
+        hive.action('bQ1', 'bS1', hive.NE)
+        hive.action('wG1', 'wQ1', hive.W)
+        hive.action('bS2', 'bS1', hive.E)
+        hive.action('wA1', 'wQ1', hive.NE)
+        hive.action('bA1', 'bQ1', hive.E)
+        hive.action('wG1', 'wQ1', hive.E)
+        hive.action('bG2', 'bQ1', hive.NE)
+        hive.action('wA1', 'wG1', hive.NE)
+
+        self.assertTrue(hive.check_victory() == hive.WHITE_WIN)
+
+
+if __name__ == '__main__':
+    import unittest
+    unittest.main()

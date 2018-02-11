@@ -42,3 +42,8 @@ class TestBoard(TestCase):
         self.assertEqual((-2, -3, 3, 2), self.board.get_boundaries())
         self.board.resize((1, -1))
         self.assertEqual((-2, -3, 3, 2), self.board.get_boundaries())
+
+
+if __name__ == '__main__':
+    import unittest
+    unittest.main()

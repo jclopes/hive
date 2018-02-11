@@ -178,7 +178,7 @@ class Hive(object):
             res = self.BLACK_WIN
 
         # if black queen is surrounded => white wins
-        queen = self.playedPieces.get('wB1')
+        queen = self.playedPieces.get('bQ1')
         if(
             queen is not None and
             len(self._occupied_surroundings(queen['cell'])) == 6
