@@ -76,7 +76,7 @@ class HiveShellClient(object):
             return Hive.SW
         if pointOfContact == '=*':
             return Hive.O
-        return None
+        raise ValueError('Invalid input for point of contact: "%s"' % pointOfContact)
 
 
     def exec_cmd(self, cmd, turn):
@@ -91,12 +91,11 @@ class HiveShellClient(object):
         actPlayer = (2 - (turn % 2))
         try:
             p = self.player[actPlayer][actPiece]
+            direction = None
+            if pointOfContact is not None:
+                direction = self.poc2direction(pointOfContact)
         except Exception, e:
             return False
-
-        direction = None
-        if pointOfContact is not None:
-            direction = self.poc2direction(pointOfContact)
 
         try:
             self.hive.action(actPiece, refPiece, direction)
