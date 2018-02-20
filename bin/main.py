@@ -42,6 +42,8 @@ class HiveShellClient(object):
     def parse_cmd(self, cmd):
         self.logger.write(cmd+'\n')
 
+        if cmd == 'pass':
+            return ('non_play', cmd)
         if len(cmd) == 3:
             movingPiece = cmd
             pointOfContact = None
@@ -52,7 +54,7 @@ class HiveShellClient(object):
             movingPiece = cmd[:3]
             pointOfContact = cmd[3:5]
             refPiece = cmd[5:]
-        return (movingPiece, pointOfContact, refPiece)
+        return ('play', (movingPiece, pointOfContact, refPiece))
 
 
     def ppoc2cell(self, pointOfContact, refPiece):
@@ -81,7 +83,12 @@ class HiveShellClient(object):
 
     def exec_cmd(self, cmd, turn):
         try:
-            (actPiece, pointOfContact, refPiece) = self.parse_cmd(cmd)
+            (cmdType, value) = self.parse_cmd(cmd)
+            if cmdType == 'play':
+                (actPiece, pointOfContact, refPiece) = value
+            if cmdType == 'non_play' and value == 'pass':
+                self.hive.action(cmdType, value)
+                return True
         except:
             return False
 
@@ -98,7 +105,7 @@ class HiveShellClient(object):
             return False
 
         try:
-            self.hive.action(actPiece, refPiece, direction)
+            self.hive.action('play', (actPiece, refPiece, direction))
         except HiveException:
             return False
         return True

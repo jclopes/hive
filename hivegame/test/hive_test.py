@@ -37,15 +37,15 @@ class TestHive(TestCase):
         self.hive = Hive()
         self.hive.setup()
 
-        self.hive.action('wS1')
-        self.hive.action('bS1', 'wS1', self.hive.E)
-        self.hive.action('wQ1', 'wS1', self.hive.SW)
-        self.hive.action('bQ1', 'bS1', self.hive.SE)
-        self.hive.action('wS2', 'wS1', self.hive.NW)
-        self.hive.action('bG1', 'bS1', self.hive.E)
-        self.hive.action('wB1', 'wS2', self.hive.W)
-        self.hive.action('bA1', 'bQ1', self.hive.SW)
-        self.hive.action('wG1', 'wB1', self.hive.SW)
+        self.hive.action('play', ('wS1'))
+        self.hive.action('play', ('bS1', 'wS1', self.hive.E))
+        self.hive.action('play', ('wQ1', 'wS1', self.hive.SW))
+        self.hive.action('play', ('bQ1', 'bS1', self.hive.SE))
+        self.hive.action('play', ('wS2', 'wS1', self.hive.NW))
+        self.hive.action('play', ('bG1', 'bS1', self.hive.E))
+        self.hive.action('play', ('wB1', 'wS2', self.hive.W))
+        self.hive.action('play', ('bA1', 'bQ1', self.hive.SW))
+        self.hive.action('play', ('wG1', 'wB1', self.hive.SW))
         self.hive.place_piece(self.piece['bB1'], 'bS1', self.hive.NE)
 
 
@@ -116,6 +116,7 @@ class TestHive(TestCase):
         )
 
         self.hive.turn = 11  # set turn to be white player turn
+        self.hive.activePlayer = 0
         beetle = self.piece['wB2']
         self.hive.place_piece(beetle, 'wQ1', self.hive.W)
         startCell = self.hive._poc2cell('wQ1', self.hive.W)
@@ -134,6 +135,7 @@ class TestHive(TestCase):
 
         # moving on top of the pieces
         self.hive.turn = 12  # set turn to be black player turn
+        self.hive.activePlayer = 1
         beetle = self.piece['bB1']
         self.hive.move_piece(beetle, 'bS1', self.hive.O)
         startCell = self.hive.locate('bB1')
@@ -193,8 +195,10 @@ class TestHive(TestCase):
         queen = self.piece['wQ1']
         bA1 = self.piece['bA1']
         self.hive.turn = 11  # set turn to be white player turn
+        self.hive.activePlayer = 0
         self.hive.move_piece(queen, 'wS1', self.hive.W)
         self.hive.turn = 12  # set turn to be black player turn
+        self.hive.activePlayer = 1
         self.hive.move_piece(bA1, 'wG1', self.hive.SE)
 
         startCell = self.hive.locate('wQ1')
@@ -284,8 +288,7 @@ class TestHive(TestCase):
 
     def test_action(self):
         # place a piece and verify unplayedPieces dict
-        bS2 = HivePiece('b', 'S', 2)
-        self.hive.action(str(bS2), 'bQ1', self.hive.E)
+        self.hive.action('play', ('bS2', 'bQ1', self.hive.E))
         unplayedPieces = self.hive.get_unplayed_pieces('b')
 
         self.assertFalse('bS2' in unplayedPieces)
@@ -298,13 +301,13 @@ class TestHive(TestCase):
         hive = Hive()
         hive.setup()
 
-        hive.action('wA1')
-        hive.action('bA1', 'wA1', hive.NW)
-        hive.action('wG1', 'wA1', hive.E)
-        hive.action('bS1', 'bA1', hive.NW)
-        hive.action('wQ1', 'wA1', hive.SW)
-        hive.action('bA2', 'bA1', hive.NE)
-        hive.action('wG1', 'wA1', hive.W)
+        hive.action('play', ('wA1'))
+        hive.action('play', ('bA1', 'wA1', hive.NW))
+        hive.action('play', ('wG1', 'wA1', hive.E))
+        hive.action('play', ('bS1', 'bA1', hive.NW))
+        hive.action('play', ('wQ1', 'wA1', hive.SW))
+        hive.action('play', ('bA2', 'bA1', hive.NE))
+        hive.action('play', ('wG1', 'wA1', hive.W))
 
 
     def test_fail_placement(self):
@@ -314,15 +317,15 @@ class TestHive(TestCase):
         hive = Hive()
         hive.setup()
 
-        hive.action('wA1')
-        hive.action('bA1', 'wA1', hive.NW)
+        hive.action('play', ('wA1'))
+        hive.action('play', ('bA1', 'wA1', hive.NW))
         try:
             # This placement fails
-            hive.action('wG1', 'bA1', hive.W)
+            hive.action('play', ('wG1', 'bA1', hive.W))
         except:
             pass
         # This placement is correct
-        hive.action('wG1', 'wA1', hive.E)
+        hive.action('play', ('wG1', 'wA1', hive.E))
 
 
     def test_victory_conditions(self):
@@ -330,17 +333,17 @@ class TestHive(TestCase):
         hive = Hive()
         hive.setup()
 
-        hive.action('wS1')
-        hive.action('bS1', 'wS1', hive.E)
-        hive.action('wQ1', 'wS1', hive.NW)
-        hive.action('bQ1', 'bS1', hive.NE)
-        hive.action('wG1', 'wQ1', hive.W)
-        hive.action('bS2', 'bS1', hive.E)
-        hive.action('wA1', 'wQ1', hive.NE)
-        hive.action('bA1', 'bQ1', hive.E)
-        hive.action('wG1', 'wQ1', hive.E)
-        hive.action('bG2', 'bQ1', hive.NE)
-        hive.action('wA1', 'wG1', hive.NE)
+        hive.action('play', ('wS1'))
+        hive.action('play', ('bS1', 'wS1', hive.E))
+        hive.action('play', ('wQ1', 'wS1', hive.NW))
+        hive.action('play', ('bQ1', 'bS1', hive.NE))
+        hive.action('play', ('wG1', 'wQ1', hive.W))
+        hive.action('play', ('bS2', 'bS1', hive.E))
+        hive.action('play', ('wA1', 'wQ1', hive.NE))
+        hive.action('play', ('bA1', 'bQ1', hive.E))
+        hive.action('play', ('wG1', 'wQ1', hive.E))
+        hive.action('play', ('bG2', 'bQ1', hive.NE))
+        hive.action('play', ('wA1', 'wG1', hive.NE))
 
         self.assertTrue(hive.check_victory() == hive.WHITE_WIN)
 

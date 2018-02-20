@@ -1,5 +1,5 @@
-from board import HexBoard
-from piece import HivePiece
+from hivegame.board import HexBoard
+from hivegame.piece import HivePiece
 
 
 class HiveException(Exception):
@@ -30,6 +30,7 @@ class Hive(object):
 
     def __init__(self):
         self.turn = 0
+        self.activePlayer = 0
         self.players = ['w', 'b']
         self.board = HexBoard()
         self.playedPieces = {}
@@ -46,27 +47,36 @@ class Hive(object):
         self.turn = 1
 
 
-    def action(self, actPiece, refPiece=None, direction=None):
+    def action(self, actionType, action):
         """Perform the player action.
         return True or ExceptionType
         TODO: elaborate on the exceptions
         """
-        player = self.get_active_player()
-
-        piece = self.unplayedPieces[player].get(actPiece, None)
-        if piece is not None:
-            self.place_piece(piece, refPiece, direction)
-            # Remove piece from the unplayed set
-            del self.unplayedPieces[player][actPiece]
-        else:
-            ppiece = self.playedPieces.get(actPiece, None)
-            if ppiece is None:
-                raise HiveException
+        if (actionType == 'play'):
+            if (isinstance(action, tuple)):
+                (actPiece, refPiece, direction) = action
+            elif (isinstance(action, basestring)):
+                (actPiece, refPiece, direction) = (action, None, None)
+                
+            player = self.get_active_player()
+            piece = self.unplayedPieces[player].get(actPiece, None)
+            if piece is not None:
+                self.place_piece(piece, refPiece, direction)
+                # Remove piece from the unplayed set
+                del self.unplayedPieces[player][actPiece]
             else:
-                self.move_piece(ppiece['piece'], refPiece, direction)
+                ppiece = self.playedPieces.get(actPiece, None)
+                if ppiece is None:
+                    raise HiveException
+                else:
+                    self.move_piece(ppiece['piece'], refPiece, direction)
+
+        elif (actionType == 'non_play' and action == 'pass'):
+            pass
 
         # perform turn increment - TODO:if succesful
         self.turn += 1
+        self.activePlayer ^= 1  # switch active player
         return True
 
     def get_unplayed_pieces(self, player):
@@ -77,8 +87,7 @@ class Hive(object):
         if self.turn <= 0:
             return None
 
-        ap = 1 - (self.turn % 2)
-        return self.players[ap]
+        return self.players[self.activePlayer]
 
     def get_board_boundaries(self):
         """returns the coordinates of the board limits."""
@@ -197,14 +206,12 @@ class Hive(object):
         """
         Verifies if the action is valid on this turn.
         """
-        is_even_turn = (self.turn % 2) == 0
-
-        # White player plays on the odd turns
-        if (not is_even_turn) and piece.color != 'w':
+        whiteTurn = self.activePlayer == 0
+        blackTurn = self.activePlayer == 1
+        if whiteTurn and piece.color != 'w':
             return False
 
-        # Black player plays on the even turns
-        if is_even_turn and piece.color != 'b':
+        if blackTurn and piece.color != 'b':
             return False
 
         # Tournament rule: no queen in the first move
@@ -213,9 +220,9 @@ class Hive(object):
 
         # Move actions are only allowed after the queen is on the board
         if action == 'move':
-            if is_even_turn and ('bQ1' not in self.playedPieces):
+            if blackTurn and ('bQ1' not in self.playedPieces):
                 return False
-            if (not is_even_turn) and ('wQ1' not in self.playedPieces):
+            if whiteTurn and ('wQ1' not in self.playedPieces):
                 return False
 
         # White Queen must be placed by turn 7 (4th white action)
@@ -229,7 +236,6 @@ class Hive(object):
             if 'bQ1' not in self.playedPieces:
                 if str(piece) != 'bQ1' or action != 'place':
                     return False
-
         return True
 
 
