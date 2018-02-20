@@ -65,12 +65,17 @@ can be easily parsed by a machine.
         right face.
     * `*/` - SE (south-east) active piece is place touching the target piece
         at its lower-right face.
-    * `=*` - O (origin/over) active piece is place on top of the target piece.
+    * `=*` - O (over) active piece is place on top of the target piece.
 
  - __Starting Piece__:
     The only exception to the previous notation is the starting piece of the
     first player. The first move of the first player is just the name of a
     piece since the placement of the 1st piece is always fixed.
+
+ - __Other Commands__:
+    * `pass` - Advances the turn counter and switches the active player.
+        To be used when there is no possible move by a player. If both players
+        pass then the game should end in a draw.
 
 Development:
 ===========
