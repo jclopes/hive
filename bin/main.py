@@ -112,6 +112,7 @@ class HiveShellClient(object):
 
 
     def run(self):
+        player2color = {1: 'w', 2: 'b'}
         self.logger = open('game.log', 'w')
         self.player[1] = self.piece_set('w')
         self.player[2] = self.piece_set('b')
@@ -122,10 +123,10 @@ class HiveShellClient(object):
             print("Turn: %s" % self.hive.turn)
             active_player = (2 - (self.hive.turn % 2))
             print(self.view)
-            print("pieces available: %s" % sorted(
-                self.player[active_player].keys()
+            print("pieces in hand: %s" % sorted(
+                self.hive.unplayedPieces[player2color[active_player]]
             ))
-            print("player %s play: " % active_player,)
+            print("player %s play: " % active_player)
             try:
                 cmd = self.input.readline()
             except KeyboardInterrupt:
