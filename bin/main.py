@@ -25,12 +25,12 @@ class HiveShellClient(object):
         Return a full set of hive pieces
         """
         pieceSet = {}
-        for i in xrange(3):
+        for i in range(3):
             ant = HivePiece(color, 'A', i+1)
             pieceSet[str(ant)] = ant
             grasshopper = HivePiece(color, 'G', i+1)
             pieceSet[str(grasshopper)] = grasshopper
-        for i in xrange(2):
+        for i in range(2):
             spider = HivePiece(color, 'S', i+1)
             pieceSet[str(spider)] = spider
             beetle = HivePiece(color, 'B', i+1)
@@ -101,7 +101,7 @@ class HiveShellClient(object):
             direction = None
             if pointOfContact is not None:
                 direction = self.poc2direction(pointOfContact)
-        except Exception, e:
+        except:
             return False
 
         try:
@@ -128,7 +128,7 @@ class HiveShellClient(object):
             print("player %s play: " % active_player,)
             try:
                 cmd = self.input.readline()
-            except KeyboardInterrupt, e:
+            except KeyboardInterrupt:
                 break
             if self.exec_cmd(cmd.strip(), self.hive.turn):
                 print("\n")
