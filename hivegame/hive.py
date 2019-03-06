@@ -1,6 +1,11 @@
 from hivegame.board import HexBoard
 from hivegame.piece import HivePiece
 
+# Python 3 compatibility
+import sys
+if sys.version_info[0] == 3:
+    basestring = str
+
 
 class HiveException(Exception):
     """Base class for exceptions."""
@@ -57,7 +62,7 @@ class Hive(object):
                 (actPiece, refPiece, direction) = action
             elif (isinstance(action, basestring)):
                 (actPiece, refPiece, direction) = (action, None, None)
-                
+
             player = self.get_active_player()
             piece = self.unplayedPieces[player].get(actPiece, None)
             if piece is not None:
@@ -243,17 +248,17 @@ class Hive(object):
         # check if the piece has been placed
         pp = self.playedPieces.get(str(moving_piece))
         if pp is None:
-            print "piece was not played yet"
+            print("piece was not played yet")
             return False
 
         # check if the move it's to a different targetCell
         if str(moving_piece) in self.piecesInCell.get(targetCell, []):
-            print "moving to the same place"
+            print("moving to the same place")
             return False
 
         # check if moving this piece won't break the hive
         if not self._one_hive(moving_piece):
-            print "break _one_hive rule"
+            print("break _one_hive rule")
             return False
 
         validate_fun_map = {
@@ -362,12 +367,12 @@ class Hive(object):
         Return a full set of hive pieces
         """
         pieceSet = {}
-        for i in xrange(3):
+        for i in range(3):
             ant = HivePiece(color, 'A', i+1)
             pieceSet[str(ant)] = ant
             grasshopper = HivePiece(color, 'G', i+1)
             pieceSet[str(grasshopper)] = grasshopper
-        for i in xrange(2):
+        for i in range(2):
             spider = HivePiece(color, 'S', i+1)
             pieceSet[str(spider)] = spider
             beetle = HivePiece(color, 'B', i+1)
