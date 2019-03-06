@@ -284,7 +284,7 @@ class HexBoard(Board):
         # diagonal jump (dy != 0)
         else:
             # must move in a diagonal with slope = 2
-            nx = (abs(dy) + (1 - p)) / 2
+            nx = int((abs(dy) + (1 - p)) / 2)
             if abs(dx) != abs(nx):
                 return None
 
