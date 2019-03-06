@@ -503,7 +503,6 @@ class Hive(object):
             # must jump at least over one piece
             if abs(dy) <= 1:
                 return False
-
         moveDir = self.board.get_line_dir(startCell, endCell)
         # must move in a straight line
         if moveDir is None or moveDir == 0:
