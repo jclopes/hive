@@ -95,11 +95,8 @@ Development:
 
 To play the game in the command line:
 ```
-PYTHONPATH=. python -u bin/main.py
+./run.sh
 ```
-PYTHONPATH is necessary for python to consider the parent directory in the module lookup.  
-The -u flag is necessary to leave the stdout unbuffered (so the outputs aren't blocked).  
-The code is implemented in python 2.  
   
 Running the tests:
 ```
