@@ -104,4 +104,8 @@ PYTHONPATH=. python hivegame/test/hive_test.py
 PYTHONPATH=. python hivegame/test/board_test.py
 ```
 
+Donations:
+===
+[paypal](https://www.paypal.com/donate/?business=H3T6M8HMDKF5C&no_recurring=0&item_name=Thank+you+for+your+contribution.&currency_code=EUR)
+
 
